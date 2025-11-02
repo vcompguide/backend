@@ -1,9 +1,10 @@
 import { Controller, Get, Query, Version } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SampleService } from './sample.service';
 import { GetSampleTextDto } from './dto/get-sample-text.dto';
 import { GetSampleTextResponse } from './response/get-sample-text.response';
 
+@ApiTags('Sample')
 @Controller('sample')
 export class SampleController {
   constructor(private readonly sampleService: SampleService) {}
@@ -16,9 +17,8 @@ export class SampleController {
     description: 'Sample text retrieved successfully',
     type: GetSampleTextResponse,
   })
-  @Version('1')
   @Get()
-  async getSampleTextV1(@Query() query: GetSampleTextDto): Promise<GetSampleTextResponse> {
+  async getSampleText(@Query() query: GetSampleTextDto): Promise<GetSampleTextResponse> {
     return new GetSampleTextResponse(this.sampleService.getText(query.name));
   }
 }

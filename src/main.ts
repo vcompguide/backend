@@ -15,8 +15,6 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const apiEndpoint = configService.get('SERVER_URL');
 
-  console.log(`API Endpoint: ${apiEndpoint}`);
-
   const config = new DocumentBuilder()
     .addServer(apiEndpoint)
     .setTitle('VCOMPGUIDE V1 API Docs')
