@@ -7,6 +7,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 import { LandmarksModule } from './landmarks/landmark.module';
 import { RatingModule } from './ratings/ratings.module';
+import { ExternalApiModule } from './external-api/external-api.module';
+import { GmapsModule } from './gmaps/gmaps.module';
 
 @Module({
 	imports: [
@@ -25,6 +27,8 @@ import { RatingModule } from './ratings/ratings.module';
 		UsersModule,
 		LandmarksModule,
 		RatingModule,
+		ExternalApiModule,
+		GmapsModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],
