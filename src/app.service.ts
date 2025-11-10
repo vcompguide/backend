@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AppService extends BaseAppService {
-  getServiceName(): string {
-    return 'app';
-  }
+    getServiceName(): string {
+      	return 'app';
+    }
 }
