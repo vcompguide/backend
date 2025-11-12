@@ -18,11 +18,15 @@ export class UsersService {
 		const hashedPassword = await bcrypt.hash(createUserDto.password, salt);
 
 		const newUser = new this.userModel({
-		...createUserDto,
-		password: hashedPassword,
+			...createUserDto,
+			password: hashedPassword,
 		});
 
 		return newUser.save();
+	}
+
+	async findAll() {
+		return this.userModel.find({});
 	}
 
 	async findOneByEmail(email: string): Promise<UserDocument | null> {
