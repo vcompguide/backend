@@ -1,28 +1,30 @@
 import {
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  MinLength,
+	IsEmail,
+	IsNotEmpty,
+	IsOptional,
+	IsString,
+	MinLength,
 } from 'class-validator';
 
 export class CreateUserDto {
-  @IsString()
-  @IsNotEmpty()
-  name: string;
+    @IsNotEmpty()
+    @IsString()
+    name: string;
 
-  @IsEmail()
-  email: string;
+    @IsNotEmpty()
+    @IsEmail()
+    email: string;
 
-  @IsString()
-  @MinLength(8, {message: 'Password must be at least 8 characters long'})
-  password: string;
+    @IsNotEmpty()
+    @IsString()
+    @MinLength(8, {message: 'Password must be at least 8 characters long'})
+    password: string;
 
-  @IsString()
-  @IsOptional()
-  avatarUrl?: string;
+    @IsOptional()
+    @IsString()
+    avatarUrl?: string;
 
-  @IsString()
-  @IsOptional()
-  description?: string;
+    @IsOptional()
+    @IsString()
+    description?: string;
 }
