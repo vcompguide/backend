@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { setupSwagger } from 'libs';
 import { SampleModule } from './sample/sample.module';
+import { ValidationPipe } from '@nestjs/common';
 
 export function swaggerCustomScript(endpoint: string, tagOrder?: string[]) {
   return [bootstrap.toString(), `bootstrap(\"${endpoint}\", ${JSON.stringify(tagOrder)})`];
@@ -11,6 +12,13 @@ export function swaggerCustomScript(endpoint: string, tagOrder?: string[]) {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Enable validation globally
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    transform: true,
+  }));
 
   const configService = app.get(ConfigService);
   const apiEndpoint = configService.get('SERVER_URL');

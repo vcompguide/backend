@@ -2,8 +2,9 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { SampleModule } from './sample/sample.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { SampleModule } from './sample/sample.module';
+import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { LandmarksModule } from './landmarks/landmark.module';
 import { RatingModule } from './ratings/ratings.module';
@@ -24,6 +25,7 @@ import { GmapsModule } from './gmaps/gmaps.module';
 			}),
 		}),
 		SampleModule,
+		AuthModule,
 		UsersModule,
 		LandmarksModule,
 		RatingModule,
