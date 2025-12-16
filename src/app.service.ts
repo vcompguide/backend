@@ -4,6 +4,6 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class AppService extends BaseAppService {
     getServiceName(): string {
-      	return 'app';
+        return 'app';
     }
 }
