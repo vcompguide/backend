@@ -1,4 +1,4 @@
-import { IsEnum, IsLatitude, IsLongitude, IsOptional } from 'class-validator';
+import { IsEnum, IsLatitude, IsLongitude, IsOptional, ValidateNested, ArrayMinSize } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export enum TravelMode {
@@ -7,22 +7,21 @@ export enum TravelMode {
     CYCLING = 'cycling',
 }
 
+export class CoordinateDto {
+    @IsLatitude()
+    @Type(() => Number)
+    lat: number;
+
+    @IsLongitude()
+    @Type(() => Number)
+    lon: number;
+}
+
 export class RouteRequestDto {
-    @IsLatitude()
-    @Type(() => Number)
-    originLat: number;
-
-    @IsLongitude()
-    @Type(() => Number)
-    originLon: number;
-
-    @IsLatitude()
-    @Type(() => Number)
-    destinationLat: number;
-
-    @IsLongitude()
-    @Type(() => Number)
-    destinationLon: number;
+    @ArrayMinSize(2, { message: 'Cần ít nhất 2 điểm (điểm đầu và điểm cuối) để tìm đường.' })
+    @ValidateNested({ each: true })
+    @Type(() => CoordinateDto)
+    waypoints: CoordinateDto[];
 
     @IsOptional()
     @IsEnum(TravelMode)

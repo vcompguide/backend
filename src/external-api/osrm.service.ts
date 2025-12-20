@@ -1,16 +1,16 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 
+// Định nghĩa interface nội bộ để type checking
+interface Coordinate {
+    lat: number;
+    lon: number;
+}
+
 @Injectable()
 export class OsrmService {
     private readonly OSRM_API_URL = 'http://router.project-osrm.org/route/v1';
 
-    async getRoute(
-        start_lat: number,
-        start_lon: number,
-        end_lat: number,
-        end_lon: number,
-        mode: 'driving' | 'walking' | 'cycling' = 'driving',
-    ) {
+    async getRoute(coordinates: Coordinate[], mode: 'driving' | 'walking' | 'cycling' = 'driving') {
         const mode_mapping = {
             driving: 'driving',
             walking: 'foot',
@@ -18,7 +18,10 @@ export class OsrmService {
         };
         const osrm_mode = mode_mapping[mode] || 'driving';
 
-        const url = `${this.OSRM_API_URL}/${osrm_mode}/${start_lon},${start_lat};${end_lon},${end_lat}?overview=full&geometries=geojson`;
+        // Tạo chuỗi coordinates: "lon1,lat1;lon2,lat2;..."
+        const coordinatesString = coordinates.map((coord) => `${coord.lon},${coord.lat}`).join(';');
+
+        const url = `${this.OSRM_API_URL}/${osrm_mode}/${coordinatesString}?overview=full&geometries=geojson&steps=true`;
 
         try {
             const response = await fetch(url);

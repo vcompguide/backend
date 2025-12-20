@@ -11,6 +11,7 @@ import { RatingModule } from './ratings/ratings.module';
 import { ExternalApiModule } from './external-api/external-api.module';
 import { GmapsModule } from './gmaps/gmaps.module';
 import { RoutingModule } from './routing/routing.module';
+import { GeocodingModule } from './geocoding/geocoding.module';
 
 @Module({
     imports: [
@@ -33,6 +34,7 @@ import { RoutingModule } from './routing/routing.module';
         ExternalApiModule,
         GmapsModule,
         RoutingModule,
+        GeocodingModule,
     ],
     controllers: [AppController],
     providers: [AppService],
