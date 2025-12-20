@@ -3,10 +3,10 @@ import { AppService } from './app.service';
 
 @Controller({ version: VERSION_NEUTRAL })
 export class AppController {
-	constructor(private readonly appService: AppService) {}
+    constructor(private readonly appService: AppService) {}
 
-	@Get()
-	getStatus() {
-		return this.appService.getStatus();
-	}
+    @Get()
+    getStatus() {
+        return this.appService.getStatus();
+    }
 }

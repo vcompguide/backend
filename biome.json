@@ -68,7 +68,7 @@
             "arrowParentheses": "always",
             "bracketSameLine": false,
             "indentStyle": "space",
-            "indentWidth": 2,
+            "indentWidth": 4,
             "lineWidth": 120,
             "quoteStyle": "single",
             "attributePosition": "auto",

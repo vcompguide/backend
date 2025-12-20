@@ -10,29 +10,31 @@ import { LandmarksModule } from './landmarks/landmark.module';
 import { RatingModule } from './ratings/ratings.module';
 import { ExternalApiModule } from './external-api/external-api.module';
 import { GmapsModule } from './gmaps/gmaps.module';
+import { RoutingModule } from './routing/routing.module';
 
 @Module({
-	imports: [
-		ConfigModule.forRoot({
-			envFilePath: ['.env.local', '.env'],
-			isGlobal: true,
-		}),
-		MongooseModule.forRootAsync({
-			imports: [ConfigModule],
-			inject: [ConfigService],
-			useFactory: async (configService: ConfigService) => ({
-				uri: configService.get<string>('MONGODB_URI'),
-			}),
-		}),
-		SampleModule,
-		AuthModule,
-		UsersModule,
-		LandmarksModule,
-		RatingModule,
-		ExternalApiModule,
-		GmapsModule,
-	],
-	controllers: [AppController],
-	providers: [AppService],
+    imports: [
+        ConfigModule.forRoot({
+            envFilePath: ['.env.local', '.env'],
+            isGlobal: true,
+        }),
+        MongooseModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService) => ({
+                uri: configService.get<string>('MONGODB_URI'),
+            }),
+        }),
+        SampleModule,
+        AuthModule,
+        UsersModule,
+        LandmarksModule,
+        RatingModule,
+        ExternalApiModule,
+        GmapsModule,
+        RoutingModule,
+    ],
+    controllers: [AppController],
+    providers: [AppService],
 })
 export class AppModule {}

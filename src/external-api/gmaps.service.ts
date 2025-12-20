@@ -16,7 +16,7 @@ export class GmapsService {
     private readonly apiKey: string;
 
     constructor(private configService: ConfigService) {
-        // this.apiKey = this.configService.get<string>("GOOGLE_MAPS_API_KEY") || "";
+        this.apiKey = this.configService.get<string>("GOOGLE_MAPS_API_KEY") || "";
         this.client = new Client();
     }
 
@@ -24,7 +24,7 @@ export class GmapsService {
     async getNearbyPlaces(
         location: LocationDto,
         type: PlaceType2,
-        radius: number = 5000, // Default 5km radius
+        radius = 5000, // Default 5km radius
     ): Promise<PlacesNearbyResponse['data']> {
         const request: PlacesNearbyRequest = {
             params: {
