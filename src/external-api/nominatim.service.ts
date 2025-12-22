@@ -6,14 +6,9 @@ import { AxiosResponse } from 'axios';
 @Injectable()
 export class NominatimService {
     private readonly baseUrl = 'https://nominatim.openstreetmap.org';
-
+        
     constructor(private readonly httpService: HttpService) {}
 
-    /**
-     * Forward Geocoding - Search for locations by name or address
-     * @param query - place name or address string
-     * @returns JSON data from Nominatim Search API
-     */
     async searchByName(query: string): Promise<any> {
         try {
             const response: AxiosResponse = await firstValueFrom(
@@ -36,12 +31,6 @@ export class NominatimService {
         }
     }
 
-    /**
-     * Reverse Geocoding - Search for location by coordinates
-     * @param lat - latitude
-     * @param lon - longitude
-     * @returns JSON data from Nominatim Reverse API
-     */
     async searchByCoordinates(lat: number, lon: number): Promise<any> {
         try {
             const response: AxiosResponse = await firstValueFrom(

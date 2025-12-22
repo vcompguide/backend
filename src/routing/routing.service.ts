@@ -9,7 +9,6 @@ export class RoutingService {
     async getRoute(routeRequestDto: RouteRequestDto) {
         const { waypoints, mode } = routeRequestDto;
 
-        // Truyền danh sách waypoints sang OsrmService
         const osrmData = await this.osrmService.getRoute(waypoints, mode);
 
         if (!osrmData.routes || osrmData.routes.length === 0) {
@@ -24,15 +23,15 @@ export class RoutingService {
         return {
             success: true,
             data: {
-                distance: route.distance, // meters - Tổng quãng đường
-                duration: route.duration, // seconds - Tổng thời gian
-                geometry: route.geometry, // GeoJSON LineString của toàn bộ hành trình
-                // OSRM sẽ trả về nhiều "legs" tương ứng với các đoạn giữa các waypoints
-                legs: route.legs.map((leg) => ({
+                distance: route.distance, // meters
+                duration: route.duration, // seconds
+                geometry: route.geometry, // GeoJSON LineString
+                // OSRM returns many "legs" corresponding to routes between waypoints
+                legs: route.legs.map((leg: any) => ({
                     distance: leg.distance,
                     duration: leg.duration,
                     summary: leg.summary,
-                    steps: leg.steps.map((step) => ({
+                    steps: leg.steps.map((step: any) => ({
                         distance: step.distance,
                         duration: step.duration,
                         instruction: step.maneuver?.instruction || '',

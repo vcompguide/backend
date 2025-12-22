@@ -6,9 +6,9 @@ import { RouteRequestDto } from './dto/route-request.dto';
 export class RoutingController {
     constructor(private readonly routingService: RoutingService) {}
 
-    // Đổi sang POST để gửi body JSON chứa mảng waypoints
+	// POST routing/
     @Post()
-    @HttpCode(HttpStatus.OK) // Trả về 200 OK thay vì 201 Created mặc định của POST
+    @HttpCode(HttpStatus.OK)
     async getRoute(@Body() routeRequestDto: RouteRequestDto) {
         return this.routingService.getRoute(routeRequestDto);
     }

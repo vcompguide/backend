@@ -18,7 +18,7 @@ export class CoordinateDto {
 }
 
 export class RouteRequestDto {
-    @ArrayMinSize(2, { message: 'Cần ít nhất 2 điểm (điểm đầu và điểm cuối) để tìm đường.' })
+    @ArrayMinSize(2, { message: 'At least two waypoints are required' })
     @ValidateNested({ each: true })
     @Type(() => CoordinateDto)
     waypoints: CoordinateDto[];
