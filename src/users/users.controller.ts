@@ -6,5 +6,4 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   // Endpoints (GET /profile, PUT /profile)
-
 }

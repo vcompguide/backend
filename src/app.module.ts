@@ -1,24 +1,18 @@
+import { CoreDbModule } from '@libs/coredb';
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { SampleModule } from './sample/sample.module';
-import { MongooseModule } from '@nestjs/mongoose';
+import { PlaceModule } from './place/place.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.env.local', '.env'],
+      envFilePath: ['.env'],
       isGlobal: true,
     }),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_URI'),
-      }),
-    }),
-    SampleModule,
+    CoreDbModule,
+    PlaceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
