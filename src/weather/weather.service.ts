@@ -5,16 +5,21 @@ import { GetWeatherDto } from './dto/get-weather.dto';
 import { GetForecastDto } from './dto/get-forecast.dto';
 import { WeatherModel } from './weather.model';
 import { ForecastModel, ForecastPeriod } from './forecast.model';
+import { ConfigService } from '@nestjs/config';
+
+const FORECAST_URL = 'https://api.openweathermap.org/data/2.5/forecast';
+const CURRENT_WEATHER_URL = 'https://api.openweathermap.org/data/2.5/weather';
 
 @Injectable()
 export class WeatherService {
     private readonly logger = new Logger(WeatherService.name);
     private readonly apiKey: string;
-    private readonly currentWeatherUrl = 'https://api.openweathermap.org/data/2.5/weather';
-    private readonly forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast';
 
-    constructor(private readonly httpService: HttpService) {
-        this.apiKey = process.env.OPENWEATHER_API_KEY || '';
+    constructor(
+        private readonly httpService: HttpService,
+        private readonly configService: ConfigService,
+    ) {
+        this.apiKey = this.configService.get<string>('OPENWEATHER_API_KEY') || '';
         this.logger.log(`API Key configured: ${this.apiKey ? 'Yes' : 'No'}`);
     }
 
@@ -25,11 +30,18 @@ export class WeatherService {
         }
 
         try {
-            const url = `${this.currentWeatherUrl}?lat=${dto.latitude}&lon=${dto.longitude}&appid=${this.apiKey}&units=metric`;
-
             this.logger.log(`Fetching weather data for lat: ${dto.latitude}, lon: ${dto.longitude}`);
 
-            const response = await firstValueFrom(this.httpService.get(url));
+            const response = await firstValueFrom(
+                this.httpService.get(CURRENT_WEATHER_URL, {
+                    params: {
+                        lat: dto.latitude,
+                        lon: dto.longitude,
+                        appid: this.apiKey,
+                        units: 'metric',
+                    },
+                }),
+            );
 
             this.logger.log('Weather data fetched successfully');
             return this.mapToWeatherModel(response.data, dto);
@@ -60,11 +72,18 @@ export class WeatherService {
         }
 
         try {
-            const url = `${this.forecastUrl}?lat=${dto.latitude}&lon=${dto.longitude}&appid=${this.apiKey}&units=metric`;
-
             this.logger.log(`Fetching forecast data for lat: ${dto.latitude}, lon: ${dto.longitude}`);
 
-            const response = await firstValueFrom(this.httpService.get(url));
+            const response = await firstValueFrom(
+                this.httpService.get(FORECAST_URL, {
+                    params: {
+                        lat: dto.latitude,
+                        lon: dto.longitude,
+                        appid: this.apiKey,
+                        units: 'metric',
+                    },
+                }),
+            );
 
             this.logger.log('Forecast data fetched successfully');
             return this.mapToForecastModel(response.data, dto);
