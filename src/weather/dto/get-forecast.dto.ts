@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsNumber, Min, Max, IsOptional, IsString } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class GetForecastDto {
@@ -16,6 +17,7 @@ export class GetForecastDto {
     @Max(180)
     longitude: number;
 
+    @ApiPropertyOptional()
     @IsOptional()
     @IsString()
     locationName?: string;

@@ -6,6 +6,7 @@ import { GetForecastDto } from './dto/get-forecast.dto';
 import { WeatherModel } from './weather.model';
 import { ForecastModel, ForecastPeriod } from './forecast.model';
 import { ConfigService } from '@nestjs/config';
+import { OpenWeatherCurrentResponse, OpenWeatherForecastResponse } from './types';
 
 const FORECAST_URL = 'https://api.openweathermap.org/data/2.5/forecast';
 const CURRENT_WEATHER_URL = 'https://api.openweathermap.org/data/2.5/weather';
@@ -21,14 +22,14 @@ export class WeatherService {
     ) {
         this.apiKey = this.configService.get<string>('OPENWEATHER_API_KEY') || '';
         this.logger.log(`API Key configured: ${this.apiKey ? 'Yes' : 'No'}`);
+
+        if (!this.apiKey) {
+            this.logger.error('OpenWeatherMap API key is not configured');
+            throw new Error('Weather API key is missing from environment variables');
+        }
     }
 
     async getCurrentWeather(dto: GetWeatherDto): Promise<WeatherModel> {
-        if (!this.apiKey) {
-            this.logger.error('OpenWeatherMap API key is not configured');
-            throw new HttpException('Weather API key is not configured', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
         try {
             this.logger.log(`Fetching weather data for lat: ${dto.latitude}, lon: ${dto.longitude}`);
 
@@ -66,16 +67,11 @@ export class WeatherService {
     }
 
     async getForecast(dto: GetForecastDto): Promise<ForecastModel> {
-        if (!this.apiKey) {
-            this.logger.error('OpenWeatherMap API key is not configured');
-            throw new HttpException('Weather API key is not configured', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
         try {
             this.logger.log(`Fetching forecast data for lat: ${dto.latitude}, lon: ${dto.longitude}`);
 
             const response = await firstValueFrom(
-                this.httpService.get(FORECAST_URL, {
+                this.httpService.get<OpenWeatherForecastResponse>(FORECAST_URL, {
                     params: {
                         lat: dto.latitude,
                         lon: dto.longitude,
@@ -86,28 +82,50 @@ export class WeatherService {
             );
 
             this.logger.log('Forecast data fetched successfully');
-            return this.mapToForecastModel(response.data, dto);
+
+            // OPENWEATHER 3-HOUR STEPS:
+            // Index 0: +3h, Index 1: +6h, Index 3: +12h, Index 7: +24h
+            const targetIndices = [0, 1, 3, 7];
+            const filteredList = targetIndices.map((index) => response.data.list[index]).filter(Boolean); // Safety check if index doesn't exist
+
+            // Create a copy of the response data with ONLY the filtered intervals
+            const filteredData = {
+                ...response.data,
+                list: filteredList,
+            };
+
+            return this.mapToForecastModel(filteredData, dto);
         } catch (error) {
-            this.logger.error('Error fetching forecast data:', error.message);
+            this.logger.error(`Error fetching forecast data: ${error.message}`);
 
             if (error.response) {
-                this.logger.error(`API Response Status: ${error.response.status}`);
-                this.logger.error('API Response Data:', error.response.data);
+                const { status, data } = error.response;
+                this.logger.error(`OpenWeather API Error [${status}]: ${JSON.stringify(data)}`);
 
-                if (error.response.status === 401) {
-                    throw new HttpException('Invalid API key', HttpStatus.UNAUTHORIZED);
+                if (status === 401) {
+                    throw new HttpException('Invalid Weather API key configured', HttpStatus.UNAUTHORIZED);
                 }
-
-                if (error.response.status === 404) {
-                    throw new HttpException('Location not found', HttpStatus.NOT_FOUND);
+                if (status === 404) {
+                    throw new HttpException('Weather data for this location not found', HttpStatus.NOT_FOUND);
+                }
+                if (status === 429) {
+                    throw new HttpException('Weather API rate limit exceeded', HttpStatus.TOO_MANY_REQUESTS);
                 }
             }
 
-            throw new HttpException(`Failed to fetch forecast data: ${error.message}`, HttpStatus.BAD_GATEWAY);
+            // Default error for network failures or 500s from OpenWeather
+            throw new HttpException(`Weather Service currently unavailable: ${error.message}`, HttpStatus.BAD_GATEWAY);
         }
     }
 
-    private mapToWeatherModel(data: any, dto: GetWeatherDto): WeatherModel {
+    private filterSpecificIntervals(list: OpenWeatherForecastResponse['list']) {
+        // OpenWeather provides 3-hour steps.
+        // index 0 = +3h, index 1 = +6h, index 3 = +12h, index 7 = +24h
+        const targets = [0, 1, 3, 7];
+        return targets.map((index) => list[index]).filter(Boolean);
+    }
+
+    private mapToWeatherModel(data: OpenWeatherCurrentResponse, dto: GetWeatherDto): WeatherModel {
         return {
             location: {
                 latitude: dto.latitude,
@@ -129,18 +147,7 @@ export class WeatherService {
         };
     }
 
-    private mapToForecastModel(data: any, dto: GetForecastDto): ForecastModel {
-        const now = Date.now() / 1000; // Current time in Unix timestamp
-
-        // OpenWeatherMap returns forecasts in 3-hour intervals
-        const forecasts = data.list;
-
-        // Find the closest forecast for each time period
-        const next3Hours = this.findClosestForecast(forecasts, now + 3 * 3600);
-        const next6Hours = this.findClosestForecast(forecasts, now + 6 * 3600);
-        const next12Hours = this.findClosestForecast(forecasts, now + 12 * 3600);
-        const next24Hours = this.findClosestForecast(forecasts, now + 24 * 3600);
-
+    private mapToForecastModel(data: OpenWeatherForecastResponse, dto: GetForecastDto): ForecastModel {
         return {
             location: {
                 latitude: dto.latitude,
@@ -148,28 +155,12 @@ export class WeatherService {
                 name: dto.locationName || data.city?.name,
                 country: data.city?.country,
             },
-            forecasts: {
-                next3Hours: this.mapForecastPeriod(next3Hours),
-                next6Hours: this.mapForecastPeriod(next6Hours),
-                next12Hours: this.mapForecastPeriod(next12Hours),
-                next24Hours: this.mapForecastPeriod(next24Hours),
-            },
+            forecasts: data.list.map((item) => this.mapForecastPeriod(item)),
             retrievedAt: new Date(),
         };
     }
 
-    private findClosestForecast(forecasts: any[], targetTimestamp: number): any {
-        return forecasts.reduce((closest, forecast) => {
-            const forecastTime = forecast.dt;
-            const closestTime = closest.dt;
-
-            return Math.abs(forecastTime - targetTimestamp) < Math.abs(closestTime - targetTimestamp)
-                ? forecast
-                : closest;
-        });
-    }
-
-    private mapForecastPeriod(forecast: any): ForecastPeriod {
+    private mapForecastPeriod(forecast: OpenWeatherForecastResponse['list'][0]): ForecastPeriod {
         return {
             time: new Date(forecast.dt * 1000).toISOString(),
             timestamp: forecast.dt,
@@ -181,8 +172,8 @@ export class WeatherService {
             windDirection: forecast.wind.deg,
             description: forecast.weather[0]?.description || '',
             icon: forecast.weather[0]?.icon || '',
-            precipitation: forecast.pop * 100, // Probability of precipitation
-            clouds: forecast.clouds.all,
+            precipitation: (forecast.pop || 0) * 100,
+            clouds: forecast.clouds?.all || 0,
         };
     }
 }
