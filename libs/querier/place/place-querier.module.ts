@@ -1,17 +1,35 @@
 import { SchedulerModule } from '@libs/common/scheduler/scheduler.module';
 import { CoreDbModule } from '@libs/coredb';
 import { Place, PlaceSchema } from '@libs/coredb/schemas/place.schema';
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { Global, Module } from '@nestjs/common';
+import { MongooseModule, getModelToken } from '@nestjs/mongoose';
+import { SchedulerRegistry } from '@nestjs/schedule';
+import { Model } from 'mongoose';
 import { PlaceQuerierService } from './place-querier.service';
 
-@Module({
-    imports: [
-        CoreDbModule,
-        MongooseModule.forFeature([{ name: Place.name, schema: PlaceSchema }], 'core'),
-        SchedulerModule,
-    ],
-    providers: [PlaceQuerierService],
-    exports: [PlaceQuerierService],
-})
-export class PlaceQuerierModule {}
+@Global()
+@Module({})
+export class PlaceQuerierModule {
+    static forRoot() {
+        return {
+            module: PlaceQuerierModule,
+            imports: [
+                CoreDbModule,
+                MongooseModule.forFeature([{ name: Place.name, schema: PlaceSchema }], 'core'),
+                SchedulerModule,
+            ],
+            providers: [
+                {
+                    provide: PlaceQuerierService,
+                    useFactory: async (placeModel: Model<Place>, scheduler: SchedulerRegistry) => {
+                        const service = new PlaceQuerierService(placeModel, scheduler);
+                        await service.init();
+                        return service;
+                    },
+                    inject: [getModelToken(Place.name, 'core'), SchedulerRegistry],
+                },
+            ],
+            exports: [PlaceQuerierService],
+        };
+    }
+}

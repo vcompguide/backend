@@ -9,7 +9,7 @@ import { PlaceService } from './place.service';
 @Module({
     imports: [
         CoreDbModule,
-        PlaceQuerierModule,
+        PlaceQuerierModule.forRoot(),
         MongooseModule.forFeature(
             [
                 {
