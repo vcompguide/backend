@@ -1,5 +1,5 @@
-import { IsEnum, IsLatitude, IsLongitude, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
+import { IsEnum, IsLatitude, IsLongitude, IsOptional } from 'class-validator';
 
 export enum TravelMode {
     DRIVING = 'driving',

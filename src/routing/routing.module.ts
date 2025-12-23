@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
+import { ExternalApiModule } from 'src/external-api/external-api.module';
 import { RoutingController } from './routing.controller';
 import { RoutingService } from './routing.service';
-import { ExternalApiModule } from 'src/external-api/external-api.module';
 
 @Module({
     imports: [ExternalApiModule],

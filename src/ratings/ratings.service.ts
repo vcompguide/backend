@@ -6,7 +6,7 @@ import { Rating, RatingDocument } from './schemas/rating.schema';
 @Injectable()
 export class RatingService {
     constructor(
-        @InjectModel(Rating.name)
+        @InjectModel(Rating.name, 'core')
         private landmarkModel: Model<RatingDocument>,
     ) {}
 }

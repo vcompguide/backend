@@ -5,17 +5,17 @@ import { LandmarksService } from './landmark.service';
 // So users can browse landmarks before logging in.
 @Controller('landmarks')
 export class LandmarksController {
-  constructor(private readonly landmarksService: LandmarksService) {}
+    constructor(private readonly landmarksService: LandmarksService) {}
 
-  // GET /landmarks
-  @Get()
-  async findAll() {
-    return this.landmarksService.findAll();
-  }
+    // GET /landmarks
+    @Get()
+    async findAll() {
+        return this.landmarksService.findAll();
+    }
 
-  // GET /landmarks/:id
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.landmarksService.findOne(id);
-  }
+    // GET /landmarks/:id
+    @Get(':id')
+    async findOne(@Param('id') id: string) {
+        return this.landmarksService.findOne(id);
+    }
 }

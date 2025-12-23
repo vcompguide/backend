@@ -1,17 +1,17 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { UsersService } from "src/users/users.service";
-import { JwtService } from "@nestjs/jwt";
-import { ConfigService } from "@nestjs/config";
-import { CreateUserDto } from "src/users/dto/create-user.dto";
-import { LoginUserDto } from "./dto/login-user.dto";
-import * as bcrypt from "bcrypt";
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { UsersService } from 'src/users/users.service';
+import { LoginUserDto } from './dto/login-user.dto';
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly usersService: UsersService,
         private readonly jwtService: JwtService,
-        private readonly configService: ConfigService
+        private readonly configService: ConfigService,
     ) {}
 
     async signup(dto: CreateUserDto) {
@@ -23,12 +23,12 @@ export class AuthService {
     async signin(dto: LoginUserDto) {
         const user = await this.usersService.findOneByEmail(dto.email);
         if (!user) {
-            throw new UnauthorizedException("Invalid credentials");
+            throw new UnauthorizedException('Invalid credentials');
         }
 
         const isPasswordMatching = await bcrypt.compare(dto.password, user.password);
         if (!isPasswordMatching) {
-            throw new UnauthorizedException("Invalid credentials");
+            throw new UnauthorizedException('Invalid credentials');
         }
 
         return this.signToken(user.id, user.email);
@@ -41,10 +41,10 @@ export class AuthService {
         };
 
         const access_token = await this.jwtService.signAsync(payload, {
-            expiresIn: "15m",
-            secret: this.configService.get<string>("JWT_SECRET"),
+            expiresIn: '15m',
+            secret: this.configService.get<string>('JWT_SECRET'),
         });
 
-        return {access_token};
+        return { access_token };
     }
 }

@@ -1,8 +1,8 @@
-import { Module } from "@nestjs/common";
-import { GmapsController } from "./gmaps.controller";
+import { Module } from '@nestjs/common';
+import { GmapsController } from './gmaps.controller';
 
 @Module({
     controllers: [GmapsController],
-    providers: []
+    providers: [],
 })
 export class GmapsModule {}

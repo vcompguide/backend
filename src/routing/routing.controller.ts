@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { RoutingService } from './routing.service';
 import { RouteRequestDto } from './dto/route-request.dto';
+import { RoutingService } from './routing.service';
 
 @Controller('routing')
 export class RoutingController {

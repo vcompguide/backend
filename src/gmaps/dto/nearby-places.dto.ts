@@ -1,15 +1,7 @@
-import {
-    IsEnum,
-    IsNotEmpty,
-    IsNumber,
-    IsObject,
-    IsOptional,
-    IsString,
-    ValidateNested,
-} from 'class-validator';
-import { Type } from 'class-transformer'
-import { LocationDto } from './location.dto';
 import { PlaceType2 } from '@googlemaps/google-maps-services-js';
+import { Type } from 'class-transformer';
+import { IsEnum, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { LocationDto } from './location.dto';
 
 const supportedPlaceTypes = [
     'restaurant',

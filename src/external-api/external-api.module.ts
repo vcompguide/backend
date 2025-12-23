@@ -4,7 +4,7 @@ import { OsrmService } from './osrm.service';
 
 @Global()
 @Module({
-  providers: [GmapsService, OsrmService],
-  exports: [GmapsService, OsrmService],
+    providers: [GmapsService, OsrmService],
+    exports: [GmapsService, OsrmService],
 })
 export class ExternalApiModule {}
