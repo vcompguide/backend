@@ -13,6 +13,7 @@ import { RatingModule } from './ratings/ratings.module';
 import { RoutingModule } from './routing/routing.module';
 import { GeocodingModule } from './geocoding/geocoding.module';
 import { UsersModule } from './users/users.module';
+import { ChatbotModule } from './chatbot/chatbot.module';
 
 @Module({
     imports: [
@@ -24,6 +25,7 @@ import { UsersModule } from './users/users.module';
         GmapsModule,
         RoutingModule,
         GeocodingModule,
+        ChatbotModule,
     ],
     controllers: [AppController],
     providers: [AppService],
