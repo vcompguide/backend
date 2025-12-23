@@ -12,6 +12,7 @@ import { PlaceModule } from './place/place.module';
 import { RatingModule } from './ratings/ratings.module';
 import { RoutingModule } from './routing/routing.module';
 import { UsersModule } from './users/users.module';
+import { WeatherModule } from './weather/weather.module';
 
 @Module({
     imports: [
@@ -28,6 +29,7 @@ import { UsersModule } from './users/users.module';
         }),
         CoreDbModule,
         PlaceModule,
+        WeatherModule,
     ],
     controllers: [AppController],
     providers: [AppService],
