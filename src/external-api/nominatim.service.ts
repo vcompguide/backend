@@ -6,7 +6,7 @@ import { AxiosResponse } from 'axios';
 @Injectable()
 export class NominatimService {
     private readonly baseUrl = 'https://nominatim.openstreetmap.org';
-        
+
     constructor(private readonly httpService: HttpService) {}
 
     async searchByName(query: string): Promise<any> {
@@ -27,7 +27,10 @@ export class NominatimService {
 
             return response.data;
         } catch (error) {
-            throw new HttpException(`Failed to search location: ${error.message}`, HttpStatus.BAD_REQUEST);
+            throw new HttpException(
+                `Failed to search location: ${error.message || 'Unknown error'}`,
+                HttpStatus.BAD_REQUEST,
+            );
         }
     }
 
@@ -49,7 +52,10 @@ export class NominatimService {
 
             return response.data;
         } catch (error) {
-            throw new HttpException(`Failed to reverse geocode: ${error.message}`, HttpStatus.BAD_REQUEST);
+            throw new HttpException(
+                `Failed to reverse geocode: ${error.message || 'Unknown error'}`,
+                HttpStatus.BAD_REQUEST,
+            );
         }
     }
 }
