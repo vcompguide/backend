@@ -11,6 +11,7 @@ import { LandmarksModule } from './landmarks/landmark.module';
 import { PlaceModule } from './place/place.module';
 import { RatingModule } from './ratings/ratings.module';
 import { RoutingModule } from './routing/routing.module';
+import { GeocodingModule } from './geocoding/geocoding.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -22,12 +23,7 @@ import { UsersModule } from './users/users.module';
         ExternalApiModule,
         GmapsModule,
         RoutingModule,
-        ConfigModule.forRoot({
-            envFilePath: ['.env'],
-            isGlobal: true,
-        }),
-        CoreDbModule,
-        PlaceModule,
+        GeocodingModule,
     ],
     controllers: [AppController],
     providers: [AppService],

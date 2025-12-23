@@ -1,5 +1,5 @@
+import { IsEnum, IsLatitude, IsLongitude, IsOptional, ValidateNested, ArrayMinSize } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsEnum, IsLatitude, IsLongitude, IsOptional } from 'class-validator';
 
 export enum TravelMode {
     DRIVING = 'driving',
@@ -7,22 +7,21 @@ export enum TravelMode {
     CYCLING = 'cycling',
 }
 
+export class CoordinateDto {
+    @IsLatitude()
+    @Type(() => Number)
+    lat: number;
+
+    @IsLongitude()
+    @Type(() => Number)
+    lon: number;
+}
+
 export class RouteRequestDto {
-    @IsLatitude()
-    @Type(() => Number)
-    originLat: number;
-
-    @IsLongitude()
-    @Type(() => Number)
-    originLon: number;
-
-    @IsLatitude()
-    @Type(() => Number)
-    destinationLat: number;
-
-    @IsLongitude()
-    @Type(() => Number)
-    destinationLon: number;
+    @ArrayMinSize(2, { message: 'At least two waypoints are required' })
+    @ValidateNested({ each: true })
+    @Type(() => CoordinateDto)
+    waypoints: CoordinateDto[];
 
     @IsOptional()
     @IsEnum(TravelMode)
