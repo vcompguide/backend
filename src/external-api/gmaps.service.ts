@@ -1,5 +1,3 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import {
     Client,
     DirectionsRequest,
@@ -8,7 +6,9 @@ import {
     PlacesNearbyRequest,
     PlacesNearbyResponse,
 } from '@googlemaps/google-maps-services-js';
-import { LocationDto } from '../gmaps/dto/location.dto'
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { LocationDto } from '../gmaps/dto/location.dto';
 
 @Injectable()
 export class GmapsService {
@@ -16,7 +16,7 @@ export class GmapsService {
     private readonly apiKey: string;
 
     constructor(private configService: ConfigService) {
-        this.apiKey = this.configService.get<string>("GOOGLE_MAPS_API_KEY") || "";
+        this.apiKey = this.configService.get<string>('GOOGLE_MAPS_API_KEY') || '';
         this.client = new Client();
     }
 
@@ -45,10 +45,7 @@ export class GmapsService {
     }
 
     // Fetches directions (transportation path) from the Google Maps API
-    async getDirections(
-        origin: LocationDto,
-        destination: LocationDto,
-    ): Promise<DirectionsResponse['data']> {
+    async getDirections(origin: LocationDto, destination: LocationDto): Promise<DirectionsResponse['data']> {
         const request: DirectionsRequest = {
             params: {
                 origin: [origin.lat, origin.lon],
