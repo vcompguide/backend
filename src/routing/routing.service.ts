@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { OsrmService } from 'src/external-api/osrm.service';
-import { RouteRequestDto } from './dto/route-request.dto';
+import { RouteRequestDto } from './dto';
 
 @Injectable()
 export class RoutingService {

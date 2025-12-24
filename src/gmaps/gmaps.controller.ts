@@ -1,7 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { GmapsService } from 'src/external-api/gmaps.service';
-import { DirectionsDto } from './dto/directions.dto';
-import { NearbyPlacesDto } from './dto/nearby-places.dto';
+import { DirectionsDto, NearbyPlacesDto } from './dto';
 
 @Controller('gmaps')
 export class GmapsController {

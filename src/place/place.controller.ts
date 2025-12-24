@@ -1,8 +1,8 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { PlaceFilterDto } from './dtos/place-filter.dto';
+import { PlaceFilterDto } from './dtos';
 import { PlaceService } from './place.service';
-import { PlacesResponse } from './response/place.response';
+import { PlacesResponse } from './response';
 
 @ApiTags('Place')
 @Controller('place')

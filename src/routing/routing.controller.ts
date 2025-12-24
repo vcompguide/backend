@@ -1,6 +1,6 @@
 import { Body, Controller, Post, HttpCode, HttpStatus } from '@nestjs/common';
 import { RoutingService } from './routing.service';
-import { RouteRequestDto } from './dto/route-request.dto';
+import { RouteRequestDto } from './dto';
 
 @Controller('routing')
 export class RoutingController {

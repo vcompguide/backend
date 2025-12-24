@@ -1,6 +1,6 @@
+import { ConfigService } from '@nestjs/config';
 import { InferenceClient } from '@huggingface/inference';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 
 interface Message {
     role: string;

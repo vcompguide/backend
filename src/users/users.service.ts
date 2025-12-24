@@ -1,9 +1,9 @@
 import { User, UserDocument } from '@libs/coredb/schemas/user.schema';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import * as bcrypt from 'bcrypt';
+import { CreateUserDto } from './dto';
 import { Model } from 'mongoose';
-import { CreateUserDto } from './dto/create-user.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {

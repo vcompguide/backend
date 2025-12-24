@@ -38,7 +38,9 @@ export class OsrmService {
 
             const data = response.data;
             if (data.code !== 'Ok') {
-                throw new HttpException(`OSRM API error: ${data.message || 'Unknown error'}`, HttpStatus.BAD_REQUEST);
+                throw new HttpException(`OSRM API error: ${data.message || 'Unknown error'}`,
+                    HttpStatus.BAD_REQUEST
+                );
             }
 
             return data;

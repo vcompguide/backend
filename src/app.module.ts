@@ -1,7 +1,5 @@
-import { CoreDbModule } from '@libs/coredb';
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -17,15 +15,20 @@ import { ChatbotModule } from './chatbot/chatbot.module';
 
 @Module({
     imports: [
+        ConfigModule.forRoot({
+            envFilePath: ['.env.local', '.env'],
+            isGlobal: true,
+        }),
         AuthModule,
-        UsersModule,
-        LandmarksModule,
-        RatingModule,
-        ExternalApiModule,
-        GmapsModule,
-        RoutingModule,
-        GeocodingModule,
         ChatbotModule,
+        ExternalApiModule,
+        GeocodingModule,
+        GmapsModule,
+        LandmarksModule,
+        PlaceModule,
+        RatingModule,
+        RoutingModule,
+        UsersModule,
     ],
     controllers: [AppController],
     providers: [AppService],
