@@ -6,7 +6,7 @@ import { RouteRequestDto } from './dto';
 export class RoutingController {
     constructor(private readonly routingService: RoutingService) {}
 
-	  // POST routing/
+    // POST api/routing/
     @Post()
     @HttpCode(HttpStatus.OK)
     async getRoute(@Body() routeRequestDto: RouteRequestDto) {

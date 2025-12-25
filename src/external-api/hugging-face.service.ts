@@ -33,7 +33,12 @@ export class HuggingFaceService {
 Be concise, friendly, and informative. If you don't know specific details about a location, provide general helpful advice and suggest the user verify current information.`;
     }
 
-    async chat(userMessage: string, conversationHistory?: Message[], maxToken?: 200, temperature?: 0.7): Promise<any> {
+    async chat(
+        userMessage: string,
+        conversationHistory?: Message[],
+        maxToken?: 200,
+        temperature?: 0.7
+    ): Promise<any> {
         // Add system prompt to conversation context
         const messages: Message[] = [
             {
