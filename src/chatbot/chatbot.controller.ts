@@ -1,20 +1,45 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ChatbotService } from './chatbot.service';
 import { ChatRequestDto, LocationRecommendationDto } from './dto';
+import { ChatResponse, LocationRecommendationResponse } from './response';
 
+@ApiTags('Chatbot')
 @Controller('chatbot')
 export class ChatbotController {
     constructor(private readonly chatbotService: ChatbotService) {}
 
-    // POST chatbot/chat
+    // POST api/chatbot/chat
     @Post('chat')
-    async chat(@Body() chatRequestDto: ChatRequestDto) {
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({
+        summary: 'Get response message from the chatbot',
+        description: 'Get response from HuggingFace model for user\'s request message',
+    })
+    @ApiResponse({
+        status: HttpStatus.OK,
+        description: 'Chatbot responded successfully',
+        type: ChatResponse,
+    })
+    async chat(@Body() chatRequestDto: ChatRequestDto): Promise<ChatResponse> {
         return this.chatbotService.chat(chatRequestDto);
     }
 
-    // POST chatbot/recommendations
+    // POST api/chatbot/recommendations
     @Post('recommendations')
-    async getLocationRecommendations(@Body() locationRecommendationDto: LocationRecommendationDto) {
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({
+        summary: 'Get recommendations from the chatbot',
+        description: 'Get recommendations from HuggingFace model for a specific category requested by user',
+    })
+    @ApiResponse({
+        status: HttpStatus.OK,
+        description: 'Chatbot responded successfully',
+        type: LocationRecommendationResponse,
+    })
+    async getLocationRecommendations(
+        @Body() locationRecommendationDto: LocationRecommendationDto,
+    ): Promise<LocationRecommendationResponse> {
         return this.chatbotService.getLocationRecommendations(locationRecommendationDto);
     }
 }
