@@ -1,11 +1,11 @@
-export interface WeatherLocation {
+export class WeatherLocation {
     latitude: number;
     longitude: number;
     name?: string;
     country?: string;
 }
 
-export interface CurrentWeather {
+export class CurrentWeather {
     temperature: number;
     feelsLike: number;
     humidity: number;
@@ -16,7 +16,7 @@ export interface CurrentWeather {
     icon: string;
 }
 
-export interface WeatherModel {
+export class WeatherModel {
     location: WeatherLocation;
     current: CurrentWeather;
     timestamp: Date;

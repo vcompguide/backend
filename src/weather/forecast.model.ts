@@ -1,4 +1,4 @@
-export interface ForecastPeriod {
+export class ForecastPeriod {
     time: string; // ISO 8601 format
     timestamp: number; // Unix timestamp
     temperature: number;
@@ -13,7 +13,7 @@ export interface ForecastPeriod {
     clouds: number; // Cloudiness percentage
 }
 
-export interface ForecastModel {
+export class ForecastModel {
     location: {
         latitude: number;
         longitude: number;
