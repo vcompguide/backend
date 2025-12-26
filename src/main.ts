@@ -9,6 +9,7 @@ import { ChatbotModule } from './chatbot/chatbot.module';
 import { PlaceModule } from './place/place.module';
 import { UsersModule } from './users/users.module';
 import { RoutingModule } from './routing/routing.module';
+import { MapModule } from './map/map.module';
 
 export function swaggerCustomScript(endpoint: string, tagOrder?: string[]) {
     return [bootstrap.toString(), `bootstrap(\"${endpoint}\", ${JSON.stringify(tagOrder)})`];
@@ -37,7 +38,7 @@ async function bootstrap() {
         .build();
 
     const { document, tags } = setupSwagger(app, config, {
-        include: [AuthModule, ChatbotModule, PlaceModule, UsersModule, RoutingModule],
+        include: [AuthModule, ChatbotModule, PlaceModule, UsersModule, RoutingModule, MapModule],
     });
 
     SwaggerModule.setup('api/docs', app, document, {
