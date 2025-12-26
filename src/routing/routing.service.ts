@@ -1,45 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { OsrmService } from 'src/external-api/osrm.service';
 import { RouteRequestDto } from './dto';
+import { RouteResponse } from './response';
 
 @Injectable()
 export class RoutingService {
     constructor(private readonly osrmService: OsrmService) {}
 
-    async getRoute(routeRequestDto: RouteRequestDto) {
+    async getRoute(routeRequestDto: RouteRequestDto): Promise<RouteResponse> {
         const { waypoints, mode } = routeRequestDto;
-
-        const osrmData = await this.osrmService.getRoute(waypoints, mode);
-
-        if (!osrmData.routes || osrmData.routes.length === 0) {
-            return {
-                success: false,
-                message: 'No route found',
-            };
-        }
-
-        const route = osrmData.routes[0];
-
-        return {
-            success: true,
-            data: {
-                distance: route.distance, // meters
-                duration: route.duration, // seconds
-                geometry: route.geometry, // GeoJSON LineString
-                // OSRM returns many "legs" corresponding to routes between waypoints
-                legs: route.legs.map((leg: any) => ({
-                    distance: leg.distance,
-                    duration: leg.duration,
-                    summary: leg.summary,
-                    steps: leg.steps.map((step: any) => ({
-                        distance: step.distance,
-                        duration: step.duration,
-                        instruction: step.maneuver?.instruction || '',
-                        name: step.name,
-                        mode: step.mode,
-                    })),
-                })),
-            },
-        };
+        const result = await this.osrmService.getRoute(waypoints, mode);
+        return new RouteResponse(result);
     }
 }
