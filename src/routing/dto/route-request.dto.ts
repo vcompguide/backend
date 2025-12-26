@@ -33,7 +33,7 @@ export class CoordinateDto {
 export class RouteRequestDto {
     @ApiProperty({
         description: 'List of coordinations in the route',
-        type: Array,
+        type: [CoordinateDto],
         example: [
             {
                 lat: 10.762622,

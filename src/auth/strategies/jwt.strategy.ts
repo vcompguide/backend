@@ -20,11 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     async validate(payload: { sub: string; email: string }) {
         try {
             const user = await this.userService.findOneById(payload.sub);
-            if (user) {
-                const { password, ...userWithoutPassword } = user;
-                return userWithoutPassword;
-            }
-            return null;
+            return user;
         } catch (error) {
             throw new UnauthorizedException('User validation failed');
         }
