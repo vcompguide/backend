@@ -13,6 +13,7 @@ import { GeocodingModule } from './geocoding/geocoding.module';
 import { PoiModule } from './poi/poi.module';
 import { UsersModule } from './users/users.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
+import { MapModule } from './map/map.module';
 
 @Module({
     imports: [
@@ -30,6 +31,7 @@ import { ChatbotModule } from './chatbot/chatbot.module';
         GeocodingModule,
         RoutingModule,
         PoiModule,
+        MapModule,
         UsersModule,
     ],
     controllers: [AppController],
