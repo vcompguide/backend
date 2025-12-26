@@ -4,12 +4,13 @@ import { ConfigModule } from '@nestjs/config';
 import { GmapsService } from './gmaps.service';
 import { OsrmService } from './osrm.service';
 import { NominatimService } from './nominatim.service';
+import { OverpassService } from './overpass.service';
 import { HuggingFaceService } from './hugging-face.service';
 
 @Global()
 @Module({
     imports: [HttpModule, ConfigModule],
-    providers: [GmapsService, OsrmService, NominatimService, HuggingFaceService],
-    exports: [GmapsService, OsrmService, NominatimService, HuggingFaceService],
+    providers: [GmapsService, OsrmService, NominatimService, OverpassService, HuggingFaceService],
+    exports: [GmapsService, OsrmService, NominatimService, OverpassService, HuggingFaceService],
 })
 export class ExternalApiModule {}

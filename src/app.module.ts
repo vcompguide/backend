@@ -10,6 +10,7 @@ import { PlaceModule } from './place/place.module';
 import { RatingModule } from './ratings/ratings.module';
 import { RoutingModule } from './routing/routing.module';
 import { GeocodingModule } from './geocoding/geocoding.module';
+import { PoiModule } from './poi/poi.module';
 import { UsersModule } from './users/users.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
 
@@ -22,12 +23,13 @@ import { ChatbotModule } from './chatbot/chatbot.module';
         AuthModule,
         ChatbotModule,
         ExternalApiModule,
-        GeocodingModule,
         GmapsModule,
         LandmarksModule,
         PlaceModule,
         RatingModule,
+        GeocodingModule,
         RoutingModule,
+        PoiModule,
         UsersModule,
     ],
     controllers: [AppController],
