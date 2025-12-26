@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/users/dto';
 import { UsersService } from 'src/users/users.service';
 import { LoginUserDto } from './dto';
+import { AuthResponse } from './response';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -14,13 +15,13 @@ export class AuthService {
         private readonly configService: ConfigService,
     ) {}
 
-    async signup(dto: CreateUserDto) {
+    async signup(dto: CreateUserDto): Promise<AuthResponse> {
         const user = await this.usersService.create(dto);
 
         return this.signToken(user.id, user.email);
     }
 
-    async signin(dto: LoginUserDto) {
+    async signin(dto: LoginUserDto): Promise<AuthResponse> {
         const user = await this.usersService.findOneByEmail(dto.email);
         if (!user) {
             throw new UnauthorizedException('Invalid credentials');
@@ -34,7 +35,7 @@ export class AuthService {
         return this.signToken(user.id, user.email);
     }
 
-    private async signToken(userId: string, email: string) {
+    private async signToken(userId: string, email: string): Promise<AuthResponse> {
         const payload = {
             sub: userId,
             email,
@@ -45,6 +46,6 @@ export class AuthService {
             secret: this.configService.get<string>('JWT_SECRET'),
         });
 
-        return { access_token };
+        return new AuthResponse({ access_token });
     }
 }
