@@ -16,8 +16,8 @@ export class MessageDto {
 export class ChatRequestDto {
     @ApiProperty({
         description: 'Message from user',
-        example: 'message',
         type: String,
+        example: 'message',
         required: true,
     })
     @IsNotEmpty()
@@ -26,6 +26,7 @@ export class ChatRequestDto {
 
     @ApiProperty({
         description: 'The conversation history including messages from chatbot and user',
+        type: Array,
         example: [
             {
                 role: 'chatbot',
@@ -36,7 +37,6 @@ export class ChatRequestDto {
                 content: 'Hello chatbot, I am user.'
             }
         ],
-        type: Array,
         required: false,
     })
     @IsOptional()

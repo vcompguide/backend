@@ -11,8 +11,8 @@ export enum LocationCategory {
 export class LocationRecommendationDto {
     @ApiProperty({
         description: 'Name of the location',
-        example: 'Da Nang',
         type: String,
+        example: 'Da Nang',
         required: true,
     })
     @IsNotEmpty()
@@ -21,8 +21,9 @@ export class LocationRecommendationDto {
 
     @ApiProperty({
         description: 'Category needed to recommend',
-        example: 'restaurants',
         type: String,
+        enum: LocationCategory,
+        example: 'restaurants',
         required: true,
     })
     @IsNotEmpty()
