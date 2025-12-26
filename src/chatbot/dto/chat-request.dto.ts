@@ -26,7 +26,7 @@ export class ChatRequestDto {
 
     @ApiProperty({
         description: 'The conversation history including messages from chatbot and user',
-        type: Array,
+        type: [MessageDto],
         example: [
             {
                 role: 'chatbot',

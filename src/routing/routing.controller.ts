@@ -13,15 +13,27 @@ export class RoutingController {
     @Post()
     @HttpCode(HttpStatus.OK)
     @ApiOperation({
-        summary: 'Get a route passing through user\'s waypoints',
-        description: 'Get the most suitable route passing through user\'s waypoints with a specific vehicle mode'
+        summary: "Get a route passing through the user's waypoints",
+        description: "Get the most suitable route passing through the user's waypoints with a specific vehicle mode",
     })
     @ApiResponse({
         status: HttpStatus.OK,
         description: 'Route found successfully',
         type: RouteResponse,
     })
-    async getRoute(@Body() routeRequestDto: RouteRequestDto) {
+    @ApiResponse({
+        status: HttpStatus.BAD_REQUEST,
+        description: 'Invalid waypoints or travel mode',
+    })
+    @ApiResponse({
+        status: HttpStatus.NOT_FOUND,
+        description: 'No route found between the specified waypoints',
+    })
+    @ApiResponse({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        description: 'Failed to communicate with OSRM service',
+    })
+    async getRoute(@Body() routeRequestDto: RouteRequestDto): Promise<RouteResponse> {
         return this.routingService.getRoute(routeRequestDto);
     }
 }

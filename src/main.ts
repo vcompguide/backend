@@ -4,8 +4,10 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { setupSwagger } from 'libs';
 import { AppModule } from './app.module';
+import { AuthModule } from './auth/auth.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
 import { PlaceModule } from './place/place.module';
+import { UsersModule } from './users/users.module';
 import { RoutingModule } from './routing/routing.module';
 
 export function swaggerCustomScript(endpoint: string, tagOrder?: string[]) {
@@ -35,7 +37,7 @@ async function bootstrap() {
         .build();
 
     const { document, tags } = setupSwagger(app, config, {
-        include: [ChatbotModule, PlaceModule, RoutingModule],
+        include: [AuthModule, ChatbotModule, PlaceModule, UsersModule, RoutingModule],
     });
 
     SwaggerModule.setup('api/docs', app, document, {

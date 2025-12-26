@@ -14,12 +14,20 @@ export class ChatbotController {
     @HttpCode(HttpStatus.OK)
     @ApiOperation({
         summary: 'Get response message from the chatbot',
-        description: 'Get response from HuggingFace model for user\'s request message',
+        description: "Get response from HuggingFace model for user's request message",
     })
     @ApiResponse({
         status: HttpStatus.OK,
         description: 'Chatbot responded successfully',
         type: ChatResponse,
+    })
+    @ApiResponse({
+        status: HttpStatus.BAD_REQUEST,
+        description: 'Invalid request data',
+    })
+    @ApiResponse({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        description: 'Failed to get response from Hugging Face service',
     })
     async chat(@Body() chatRequestDto: ChatRequestDto): Promise<ChatResponse> {
         return this.chatbotService.chat(chatRequestDto);
@@ -36,6 +44,14 @@ export class ChatbotController {
         status: HttpStatus.OK,
         description: 'Chatbot responded successfully',
         type: LocationRecommendationResponse,
+    })
+    @ApiResponse({
+        status: HttpStatus.BAD_REQUEST,
+        description: 'Invalid location or category',
+    })
+    @ApiResponse({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        description: 'Failed to get recommendations from Hugging Face service',
     })
     async getLocationRecommendations(
         @Body() locationRecommendationDto: LocationRecommendationDto,
