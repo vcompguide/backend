@@ -1,7 +1,5 @@
-import { CoreDbModule } from '@libs/coredb';
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -11,25 +9,32 @@ import { LandmarksModule } from './landmarks/landmark.module';
 import { PlaceModule } from './place/place.module';
 import { RatingModule } from './ratings/ratings.module';
 import { RoutingModule } from './routing/routing.module';
+import { GeocodingModule } from './geocoding/geocoding.module';
+import { PoiModule } from './poi/poi.module';
 import { UsersModule } from './users/users.module';
 import { WeatherModule } from './weather/weather.module';
+import { ChatbotModule } from './chatbot/chatbot.module';
+import { MapModule } from './map/map.module';
 
 @Module({
     imports: [
-        AuthModule,
-        UsersModule,
-        LandmarksModule,
-        RatingModule,
-        ExternalApiModule,
-        GmapsModule,
-        RoutingModule,
         ConfigModule.forRoot({
-            envFilePath: ['.env'],
+            envFilePath: ['.env.local', '.env'],
             isGlobal: true,
         }),
-        CoreDbModule,
+        AuthModule,
+        ChatbotModule,
+        ExternalApiModule,
+        GmapsModule,
+        LandmarksModule,
         PlaceModule,
         WeatherModule,
+        RatingModule,
+        GeocodingModule,
+        RoutingModule,
+        PoiModule,
+        MapModule,
+        UsersModule,
     ],
     controllers: [AppController],
     providers: [AppService],

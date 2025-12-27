@@ -8,7 +8,7 @@ import {
 } from '@googlemaps/google-maps-services-js';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { LocationDto } from '../gmaps/dto/location.dto';
+import { LocationDto } from '../gmaps/dto';
 
 @Injectable()
 export class GmapsService {

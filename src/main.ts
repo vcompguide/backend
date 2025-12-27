@@ -4,7 +4,12 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { setupSwagger } from 'libs';
 import { AppModule } from './app.module';
+import { AuthModule } from './auth/auth.module';
+import { ChatbotModule } from './chatbot/chatbot.module';
 import { PlaceModule } from './place/place.module';
+import { UsersModule } from './users/users.module';
+import { RoutingModule } from './routing/routing.module';
+import { MapModule } from './map/map.module';
 
 export function swaggerCustomScript(endpoint: string, tagOrder?: string[]) {
     return [bootstrap.toString(), `bootstrap(\"${endpoint}\", ${JSON.stringify(tagOrder)})`];
@@ -13,6 +18,8 @@ export function swaggerCustomScript(endpoint: string, tagOrder?: string[]) {
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
+    app.setGlobalPrefix('api');
+    app.enableCors();
     app.useGlobalPipes(
         new ValidationPipe({
             transform: true,
@@ -31,10 +38,10 @@ async function bootstrap() {
         .build();
 
     const { document, tags } = setupSwagger(app, config, {
-        include: [PlaceModule],
+        include: [AuthModule, ChatbotModule, PlaceModule, UsersModule, RoutingModule, MapModule],
     });
 
-    SwaggerModule.setup('docs', app, document, {
+    SwaggerModule.setup('api/docs', app, document, {
         customSiteTitle: 'VCOMPGUIDE V1 API Docs',
         jsonDocumentUrl: 'docs-json',
         yamlDocumentUrl: 'docs-yaml',
