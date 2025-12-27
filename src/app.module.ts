@@ -12,6 +12,7 @@ import { RoutingModule } from './routing/routing.module';
 import { GeocodingModule } from './geocoding/geocoding.module';
 import { PoiModule } from './poi/poi.module';
 import { UsersModule } from './users/users.module';
+import { WeatherModule } from './weather/weather.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
 import { MapModule } from './map/map.module';
 
@@ -27,6 +28,7 @@ import { MapModule } from './map/map.module';
         GmapsModule,
         LandmarksModule,
         PlaceModule,
+        WeatherModule,
         RatingModule,
         GeocodingModule,
         RoutingModule,
