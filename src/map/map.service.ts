@@ -20,15 +20,10 @@ export class MapService {
         private readonly osrmService: OsrmService,
     ) {}
 
-    /**
-     * Search for places using Nominatim
-     * Normalizes response to unified MapLocation format
-     */
     async searchPlace(query: string, limit = 5): Promise<SearchPlaceResponse> {
         try {
             const results = await this.nominatimService.searchByName(query);
 
-            // Normalize to MapLocation format
             const locations: MapLocation[] = results.slice(0, limit).map((result: any) => ({
                 id: result.place_id?.toString(),
                 name: result.name || result.display_name?.split(',')[0] || 'Unnamed',
@@ -50,25 +45,14 @@ export class MapService {
         }
     }
 
-    /**
-     * Get detailed location information including address and nearby POIs
-     */
     async getLocationDetail(lat: number, lng: number): Promise<LocationDetailResponse> {
         try {
-            // 1. Reverse geocode to get address
             const reverseGeocode = await this.nominatimService.searchByCoordinates(lat, lng);
 
-            // 2. Get nearby POIs
-            const nearbyPOIs = await this.overpassService.searchNearby(
-                lat,
-                lng,
-                1000, // 1km radius
-            );
+            const nearbyPOIs = await this.overpassService.searchNearby(lat, lng, 1000);
 
-            // 3. Classify location type
             const locationType = this.classifyLocationType(reverseGeocode.type);
 
-            // 4. Organize nearby POIs by category
             const nearbyByCategory = this.organizePOIsByCategory(nearbyPOIs.places);
 
             return {
@@ -88,14 +72,10 @@ export class MapService {
         }
     }
 
-    /**
-     * Build a route using OSRM with optional waypoints
-     */
     async buildRoute(buildRouteDto: BuildRouteDto): Promise<RouteResponse> {
         try {
             const { origin, destination, waypoints = [], mode = 'driving' } = buildRouteDto;
 
-            // Validate and build coordinate array
             const coordinates = [
                 { lat: origin.lat, lon: origin.lng },
                 ...waypoints.map((wp) => ({ lat: wp.lat, lon: wp.lng })),
@@ -106,17 +86,14 @@ export class MapService {
                 throw new HttpException('At least origin and destination are required', HttpStatus.BAD_REQUEST);
             }
 
-            // Call OSRM to get route
             const routeData = await this.osrmService.getRoute(coordinates, mode);
 
             if (!routeData.success) {
                 throw new HttpException('Failed to calculate route', HttpStatus.BAD_REQUEST);
             }
 
-            // Extract and format route steps
             const allSteps = routeData.data.legs.flatMap((leg: any) => leg.steps);
 
-            // Generate route summary
             const summary = this.summarizeRoute({
                 distance: routeData.data.distance,
                 duration: routeData.data.duration,
@@ -138,10 +115,6 @@ export class MapService {
         }
     }
 
-    /**
-     * Update waypoints for an existing route
-     * Recalculates the route with new waypoints
-     */
     async updateWaypoints(
         origin: { lat: number; lng: number },
         destination: { lat: number; lng: number },
@@ -162,9 +135,6 @@ export class MapService {
         }
     }
 
-    /**
-     * Search for nearby places around a coordinate
-     */
     async searchNearby(lat: number, lng: number, radius = 1000, amenities?: string[]): Promise<NearbyResponse> {
         try {
             const nearbyPOIs = await this.overpassService.searchNearby(lat, lng, radius, amenities);
@@ -181,24 +151,17 @@ export class MapService {
         }
     }
 
-    /**
-     * Summarize route information
-     */
     summarizeRoute(route: any): RouteSummaryResponse {
-        // Convert distance to km
         const totalDistanceKm = (route.distance / 1000).toFixed(1);
 
-        // Convert duration to minutes
         const totalTimeMinutes = Math.round(route.duration / 60);
 
-        // Extract main roads from steps
         const mainRoads = route.steps
             .filter((step: any) => step.name && step.name !== '')
             .map((step: any) => step.name)
             .filter((name: string, index: number, self: string[]) => self.indexOf(name) === index)
             .slice(0, 5);
 
-        // Generate warnings based on route characteristics
         const warnings: string[] = [];
         if (route.distance > 50000) {
             warnings.push('Long distance route');
@@ -215,9 +178,6 @@ export class MapService {
         };
     }
 
-    /**
-     * Classify location type based on OSM type
-     */
     private classifyLocationType(osmType: string): 'place' | 'address' | 'poi' {
         const placeTypes = ['city', 'town', 'village', 'hamlet', 'suburb', 'neighbourhood'];
         const addressTypes = ['house', 'building', 'residential', 'road', 'street'];
@@ -230,9 +190,6 @@ export class MapService {
         return 'place'; // default
     }
 
-    /**
-     * Organize POIs by their amenity category
-     */
     private organizePOIsByCategory(places: any[]): Record<string, any[]> {
         const categorized: Record<string, any[]> = {};
 
