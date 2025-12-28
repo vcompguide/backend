@@ -90,12 +90,23 @@ export class ForecastResponse extends ForecastModel {
         this.location = new WeatherLocationResponse(data.location);
         this.retrievedAt = data.retrievedAt;
 
-        const labels = ['Next 3 Hours', 'Next 6 Hours', 'Next 12 Hours', 'Next 24 Hours'];
+        // Updated labels to match your new requirements
+        const labels = [
+            'Next 3 Hours',
+            'Next 6 Hours',
+            'Next 12 Hours',
+            'Next 1 Day',
+            'Next 2 Days',
+            'Next 3 Days',
+            'Next 4 Days',
+            'Next 5 Days',
+        ];
 
         this.forecasts = data.forecasts.map((period, index) => {
             return new ForecastPeriodResponse({
                 ...period,
-                descriptionLabel: labels[index] ?? 'Future Forecast', // Use nullish coalescing
+                // Fallback to a generic label if the index exceeds the labels array
+                descriptionLabel: labels[index] ?? `Day ${index - 2}`,
             });
         });
     }

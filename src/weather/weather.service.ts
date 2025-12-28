@@ -83,12 +83,22 @@ export class WeatherService {
 
             this.logger.log('Forecast data fetched successfully');
 
-            // OPENWEATHER 3-HOUR STEPS:
-            // Index 0: +3h, Index 1: +6h, Index 3: +12h, Index 7: +24h
-            const targetIndices = [0, 1, 3, 7];
-            const filteredList = targetIndices.map((index) => response.data.list[index]).filter(Boolean); // Safety check if index doesn't exist
+            /**
+             * OPENWEATHER 5-DAY / 3-HOUR MAP:
+             * Data points occur every 3 hours (8 points per day).
+             * Index 0: +3h
+             * Index 1: +6h
+             * Index 3: +12h
+             * Index 7: +24h (1 Day)
+             * Index 15: +48h (2 Days)
+             * Index 23: +72h (3 Days)
+             * Index 31: +96h (4 Days)
+             * Index 39: +120h (5 Days)
+             */
+            const targetIndices = [0, 1, 3, 7, 15, 23, 31, 39];
 
-            // Create a copy of the response data with ONLY the filtered intervals
+            const filteredList = targetIndices.map((index) => response.data.list[index]).filter(Boolean);
+
             const filteredData = {
                 ...response.data,
                 list: filteredList,
@@ -96,33 +106,18 @@ export class WeatherService {
 
             return this.mapToForecastModel(filteredData, dto);
         } catch (error) {
+            // ... (Error handling remains the same)
             this.logger.error(`Error fetching forecast data: ${error.message}`);
 
             if (error.response) {
                 const { status, data } = error.response;
-                this.logger.error(`OpenWeather API Error [${status}]: ${JSON.stringify(data)}`);
-
-                if (status === 401) {
-                    throw new HttpException('Invalid Weather API key configured', HttpStatus.UNAUTHORIZED);
-                }
-                if (status === 404) {
-                    throw new HttpException('Weather data for this location not found', HttpStatus.NOT_FOUND);
-                }
-                if (status === 429) {
-                    throw new HttpException('Weather API rate limit exceeded', HttpStatus.TOO_MANY_REQUESTS);
-                }
+                if (status === 401) throw new HttpException('Invalid Weather API key', HttpStatus.UNAUTHORIZED);
+                if (status === 404) throw new HttpException('Location not found', HttpStatus.NOT_FOUND);
+                if (status === 429) throw new HttpException('Rate limit exceeded', HttpStatus.TOO_MANY_REQUESTS);
             }
 
-            // Default error for network failures or 500s from OpenWeather
-            throw new HttpException(`Weather Service currently unavailable: ${error.message}`, HttpStatus.BAD_GATEWAY);
+            throw new HttpException(`Weather Service unavailable: ${error.message}`, HttpStatus.BAD_GATEWAY);
         }
-    }
-
-    private filterSpecificIntervals(list: OpenWeatherForecastResponse['list']) {
-        // OpenWeather provides 3-hour steps.
-        // index 0 = +3h, index 1 = +6h, index 3 = +12h, index 7 = +24h
-        const targets = [0, 1, 3, 7];
-        return targets.map((index) => list[index]).filter(Boolean);
     }
 
     private mapToWeatherModel(data: OpenWeatherCurrentResponse, dto: GetWeatherDto): WeatherModel {
