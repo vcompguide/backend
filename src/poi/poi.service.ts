@@ -15,6 +15,7 @@ export class PoiService {
       dto.longitude,
       dto.radius,
       dto.amenities,
+      dto.tagKey,
     );
   }
 
@@ -23,6 +24,7 @@ export class PoiService {
       dto.coordinates,
       dto.radius,
       dto.amenities,
+      dto.tagKey,
     );
   }
 
@@ -42,6 +44,7 @@ export class PoiService {
       dto.north,
       dto.east,
       dto.amenities,
+      dto.tagKey,
     );
   }
 }

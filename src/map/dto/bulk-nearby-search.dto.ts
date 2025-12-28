@@ -46,7 +46,7 @@ export class BulkNearbySearchDto {
     radius?: number = 1000;
 
     @ApiProperty({
-        description: 'Comma-separated list of amenity types to search for (e.g., restaurant, cafe, hotel)',
+        description: 'Comma-separated list of tag values to search for (e.g., restaurant, hotel, museum)',
         example: 'restaurant,cafe,hotel',
         required: false,
         type: [String],
@@ -61,4 +61,13 @@ export class BulkNearbySearchDto {
     @IsArray()
     @IsString({ each: true })
     amenities?: string[];
+
+    @ApiProperty({
+        description: 'OSM tag key to search (e.g., "tourism", "amenity", "historic", "leisure", "shop")',
+        example: 'amenity',
+        required: false,
+    })
+    @IsOptional()
+    @IsString()
+    tagKey?: string = 'amenity';
 }
