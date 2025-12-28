@@ -17,6 +17,7 @@ import { PlaceModule } from './place/place.module';
 import { PoiModule } from './poi/poi.module';
 import { RoutingModule } from './routing/routing.module';
 import { SavedRouteModule } from './savedRoute/saved-route.module';
+import { FavoriteModule } from './favorite/favorite.module';
 import { UsersModule } from './users/users.module';
 import { WeatherModule } from './weather/weather.module';
 
@@ -64,6 +65,7 @@ async function bootstrap() {
             LandmarksModule,
             PoiModule,
             SavedRouteModule,
+            FavoriteModule,
         ],
     });
 
