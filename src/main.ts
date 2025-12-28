@@ -1,3 +1,4 @@
+import { BearerAuthGuard } from '@libs/middleware/bearer-auth.guard';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
@@ -35,14 +36,16 @@ async function bootstrap() {
             forbidNonWhitelisted: true,
         }),
     );
-
     const configService = app.get(ConfigService);
+    app.useGlobalGuards(new BearerAuthGuard(configService));
+
     const apiEndpoint = configService.get('SERVER_URL');
 
     const config = new DocumentBuilder()
         .addServer(apiEndpoint)
         .setTitle('VCOMPGUIDE V1 API Docs')
         .setVersion('1.0')
+        .addBearerAuth({ type: 'http', scheme: 'bearer' }, 'bearer')
         .build();
 
     const { document, tags } = setupSwagger(app, config, {
@@ -63,6 +66,8 @@ async function bootstrap() {
             RatingModule,
         ],
     });
+
+    document.security = [{ bearer: [] }];
 
     SwaggerModule.setup('api/docs', app, document, {
         customSiteTitle: 'VCOMPGUIDE V1 API Docs',
