@@ -10,6 +10,7 @@ import { ChatModule } from './chat/chat.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ExternalApiModule } from './external-api/external-api.module';
+import { FavoriteModule } from './favorite/favorite.module';
 import { GmapsModule } from './gmaps/gmaps.module';
 import { LandmarksModule } from './landmarks/landmark.module';
 import { MapModule } from './map/map.module';
@@ -17,7 +18,6 @@ import { PlaceModule } from './place/place.module';
 import { PoiModule } from './poi/poi.module';
 import { RoutingModule } from './routing/routing.module';
 import { SavedRouteModule } from './savedRoute/saved-route.module';
-import { FavoriteModule } from './favorite/favorite.module';
 import { UsersModule } from './users/users.module';
 import { WeatherModule } from './weather/weather.module';
 
