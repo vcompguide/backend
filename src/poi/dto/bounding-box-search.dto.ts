@@ -32,7 +32,7 @@ export class BoundingBoxSearchDto {
     east: number;
 
     @ApiProperty({
-        description: 'Array of amenity types to search for',
+        description: 'Array of tag values to search for (e.g., restaurant, hotel, museum)',
         example: ['restaurant', 'cafe', 'hospital'],
         required: false,
     })
@@ -41,4 +41,14 @@ export class BoundingBoxSearchDto {
     @IsArray()
     @IsString({ each: true })
     amenities?: string[];
+
+    @ApiProperty({
+        description: 'OSM tag key to search (e.g., "tourism", "amenity", "historic", "leisure", "shop")',
+        example: 'amenity',
+        required: false,
+        default: 'amenity',
+    })
+    @IsOptional()
+    @IsString()
+    tagKey?: string = 'amenity';
 }

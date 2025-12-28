@@ -12,7 +12,8 @@ export class OverpassService {
      * @param latitude Center point latitude
      * @param longitude Center point longitude
      * @param radius Search radius in meters
-     * @param amenities Optional array of amenity types to search for
+     * @param amenities Optional array of tag values to search for (e.g., ['hotel', 'restaurant'])
+     * @param tagKey The OSM tag key to search (e.g., 'tourism', 'amenity', 'historic'). Defaults to 'amenity'
      * @returns Array of places found
      */
     async searchNearby(
@@ -20,13 +21,15 @@ export class OverpassService {
         longitude: number,
         radius: number,
         amenities?: string[],
+        tagKey: string = 'amenity',
     ): Promise<any> {
         try {
             let query: string;
             if (amenities && amenities.length > 0) {
-                // Search for multiple specific amenities with OR logic
+                // Search for multiple specific values with OR logic
                 const amenityQueries = amenities.map(a => 
-                    `node["amenity"="${a}"](around:${radius},${latitude},${longitude});`
+                    `node["${tagKey}"="${a}"](around:${radius},${latitude},${longitude});
+                  way["${tagKey}"="${a}"](around:${radius},${latitude},${longitude});`
                 ).join('\n                  ');
                 
                 query = `
@@ -37,11 +40,12 @@ export class OverpassService {
                     out center ${this.MAX_RESULTS};
                 `;
             } else {
-                // Search for all amenities
+                // Search for all values of the specified tag key
                 query = `
                     [out:json][timeout:25];
                     (
-                      node["amenity"](around:${radius},${latitude},${longitude});
+                      node["${tagKey}"](around:${radius},${latitude},${longitude});
+                      way["${tagKey}"](around:${radius},${latitude},${longitude});
                     );
                     out center ${this.MAX_RESULTS};
                 `;
@@ -98,7 +102,8 @@ export class OverpassService {
      * @param west West longitude
      * @param north North latitude
      * @param east East longitude
-     * @param amenities Optional array of amenity types to search for
+     * @param amenities Optional array of tag values to search for (e.g., ['hotel', 'restaurant'])
+     * @param tagKey The OSM tag key to search (e.g., 'tourism', 'amenity', 'historic'). Defaults to 'amenity'
      * @returns Array of places found
      */
     async searchByBoundingBox(
@@ -107,12 +112,14 @@ export class OverpassService {
         north: number,
         east: number,
         amenities?: string[],
+        tagKey: string = 'amenity',
     ): Promise<any> {
         try {
             let query: string;
             if (amenities && amenities.length > 0) {
                 const amenityQueries = amenities.map(a => 
-                    `node["amenity"="${a}"](${south},${west},${north},${east});`
+                    `node["${tagKey}"="${a}"](${south},${west},${north},${east});
+                  way["${tagKey}"="${a}"](${south},${west},${north},${east});`
                 ).join('\n                  ');
                 
                 query = `
@@ -126,7 +133,8 @@ export class OverpassService {
                 query = `
                     [out:json][timeout:25];
                     (
-                      node["amenity"](${south},${west},${north},${east});
+                      node["${tagKey}"](${south},${west},${north},${east});
+                      way["${tagKey}"](${south},${west},${north},${east});
                     );
                     out center ${this.MAX_RESULTS};
                 `;
@@ -182,32 +190,40 @@ export class OverpassService {
      * Search for nearby locations by radius for multiple coordinate pairs
      * @param coordinates Array of coordinate pairs (latitude, longitude)
      * @param radius Search radius in meters
-     * @param amenities Optional array of amenity types to search for
+     * @param amenities Optional array of tag values to search for (e.g., ['hotel', 'restaurant'])
+     * @param tagKey The OSM tag key to search (e.g., 'tourism', 'amenity', 'historic'). Defaults to 'amenity'
      * @returns Array of results for each coordinate pair
      */
     async searchNearbyBulk(
         coordinates: Array<{ latitude: number; longitude: number }>,
         radius: number,
         amenities?: string[],
+        tagKey: string = 'amenity',
     ): Promise<any[]> {
         try {
             // Build a single optimized query with multiple coordinates in a union
-            let nodeQueries: string[] = [];
+            let queries: string[] = [];
             
             if (amenities && amenities.length > 0) {
-                // For each coordinate and each amenity, create a node query
+                // For each coordinate and each value, create both node and way queries
                 coordinates.forEach(coord => {
                     amenities.forEach(amenity => {
-                        nodeQueries.push(
-                            `node(around:${radius},${coord.latitude},${coord.longitude})["amenity"="${amenity}"];`
+                        queries.push(
+                            `node(around:${radius},${coord.latitude},${coord.longitude})["${tagKey}"="${amenity}"];`
+                        );
+                        queries.push(
+                            `way(around:${radius},${coord.latitude},${coord.longitude})["${tagKey}"="${amenity}"];`
                         );
                     });
                 });
             } else {
-                // For each coordinate, search for all amenities
+                // For each coordinate, search for all values of the specified tag key
                 coordinates.forEach(coord => {
-                    nodeQueries.push(
-                        `node(around:${radius},${coord.latitude},${coord.longitude})["amenity"];`
+                    queries.push(
+                        `node(around:${radius},${coord.latitude},${coord.longitude})["${tagKey}"];`
+                    );
+                    queries.push(
+                        `way(around:${radius},${coord.latitude},${coord.longitude})["${tagKey}"];`
                     );
                 });
             }
@@ -215,7 +231,7 @@ export class OverpassService {
             const query = `
                 [out:json][timeout:60];
                 (
-                  ${nodeQueries.join('\n  ')}
+                  ${queries.join('\n  ')}
                 );
                 out center ${this.MAX_RESULTS};
             `;

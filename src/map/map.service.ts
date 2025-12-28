@@ -49,13 +49,6 @@ export class MapService {
     async getLocationDetail(lat: number, lng: number): Promise<LocationDetailResponse> {
         try {
             const reverseGeocode = await this.nominatimService.searchByCoordinates(lat, lng);
-
-            const nearbyPOIs = await this.overpassService.searchNearby(lat, lng, 1000);
-
-            const locationType = this.classifyLocationType(reverseGeocode.type);
-
-            const nearbyByCategory = this.organizePOIsByCategory(nearbyPOIs.places);
-
             return {
                 success: true,
                 data: {
@@ -64,8 +57,6 @@ export class MapService {
                         lng,
                     },
                     address: reverseGeocode.display_name || 'Unknown location',
-                    nearby: nearbyByCategory,
-                    locationType,
                 },
             };
         } catch (error) {
@@ -136,9 +127,9 @@ export class MapService {
         }
     }
 
-    async searchNearby(lat: number, lng: number, radius = 1000, amenities?: string[]): Promise<NearbyResponse> {
+    async searchNearby(lat: number, lng: number, radius = 1000, amenities?: string[], tagKey = 'amenity'): Promise<NearbyResponse> {
         try {
-            const nearbyPOIs = await this.overpassService.searchNearby(lat, lng, radius, amenities);
+            const nearbyPOIs = await this.overpassService.searchNearby(lat, lng, radius, amenities, tagKey);
 
             const organizedPOIs = this.organizePOIsByCategory(nearbyPOIs.places);
 
@@ -156,6 +147,7 @@ export class MapService {
         coordinates: Array<{ lat: number; lng: number }>,
         radius = 1000,
         amenities?: string[],
+        tagKey = 'amenity',
     ): Promise<BulkNearbyResponse> {
         try {
             const coordinatesFormatted = coordinates.map(coord => ({
@@ -167,6 +159,7 @@ export class MapService {
                 coordinatesFormatted,
                 radius,
                 amenities,
+                tagKey,
             );
 
             const formattedResults = bulkResults.map(result => {

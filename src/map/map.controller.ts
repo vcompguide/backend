@@ -115,9 +115,15 @@ export class MapController {
     @ApiQuery({ name: 'radius', description: 'Search radius in meters', required: false, example: 1000 })
     @ApiQuery({
         name: 'amenities',
-        description: 'Comma-separated list of amenity types',
+        description: 'Comma-separated list of tag values',
         required: false,
         example: 'restaurant,cafe,hotel',
+    })
+    @ApiQuery({
+        name: 'tagKey',
+        description: 'OSM tag key to search (tourism, amenity, historic, etc.)',
+        required: false,
+        example: 'amenity',
     })
     @ApiResponse({
         status: HttpStatus.OK,
@@ -129,7 +135,7 @@ export class MapController {
         description: 'Invalid coordinates, radius, or search parameters',
     })
     async searchNearby(@Query() nearbyDto: NearbySearchDto): Promise<NearbyResponse> {
-        return await this.mapService.searchNearby(nearbyDto.lat, nearbyDto.lng, nearbyDto.radius, nearbyDto.amenities);
+        return await this.mapService.searchNearby(nearbyDto.lat, nearbyDto.lng, nearbyDto.radius, nearbyDto.amenities, nearbyDto.tagKey);
     }
 
     @Post('nearby/bulk')
@@ -151,6 +157,7 @@ export class MapController {
             bulkNearbyDto.coordinates,
             bulkNearbyDto.radius,
             bulkNearbyDto.amenities,
+            bulkNearbyDto.tagKey,
         );
     }
 }
