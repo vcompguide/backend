@@ -69,11 +69,12 @@ async function bootstrap() {
 
     document.security = [{ bearer: [] }];
 
-    SwaggerModule.setup('api/docs', app, document, {
+    SwaggerModule.setup('/docs', app, document, {
         customSiteTitle: 'VCOMPGUIDE V1 API Docs',
         jsonDocumentUrl: 'docs-json',
         yamlDocumentUrl: 'docs-yaml',
         customJsStr: swaggerCustomScript(apiEndpoint, tags),
+        useGlobalPrefix: true,
     });
 
     const nodeEnv = configService.get('NODE_ENV');
