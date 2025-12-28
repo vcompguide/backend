@@ -1,22 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { GeoPoint } from './geoPoint.schema';
 
 export type PlaceDocument = Place & Document;
-
-@Schema({ _id: false })
-export class GeoPoint {
-    @Prop({
-        type: Number,
-        required: true,
-    })
-    x!: number;
-
-    @Prop({
-        type: Number,
-        required: true,
-    })
-    y!: number;
-}
 
 @Schema({
     collection: 'places',
