@@ -7,6 +7,6 @@ import { ExternalApiModule } from 'src/external-api/external-api.module';
 @Module({
     imports: [ExternalApiModule],
     controllers: [PoiController],
-    providers: [PoiService, OverpassService],
+    providers: [PoiService],
 })
 export class PoiModule {}

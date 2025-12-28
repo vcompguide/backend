@@ -169,12 +169,15 @@ export class MapService {
                 amenities,
             );
 
-            const formattedResults = bulkResults.map(result => ({
-                latitude: result.latitude,
-                longitude: result.longitude,
-                places: this.organizePOIsByCategory(result.places || []),
-                count: result.count || 0,
-            }));
+            const formattedResults = bulkResults.map(result => {
+                const organizedPOIs = this.organizePOIsByCategory(result.places || []);
+                return {
+                    latitude: result.latitude,
+                    longitude: result.longitude,
+                    ...organizedPOIs,
+                    count: result.count || 0,
+                };
+            });
 
             const totalPlaces = formattedResults.reduce((sum, result) => sum + result.count, 0);
 
@@ -230,6 +233,9 @@ export class MapService {
 
     private organizePOIsByCategory(places: any[]): Record<string, any[]> {
         const categorized: Record<string, any[]> = {};
+
+        // Filter out unnamed locations before categorizing
+        // const namedPlaces = places.filter(place => place.name && place.name !== 'Unnamed');
 
         places.forEach((place) => {
             const category = place.tags?.amenity || place.tags?.tourism || place.tags?.shop || 'other';

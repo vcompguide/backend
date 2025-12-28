@@ -9,6 +9,7 @@ import { ChatbotModule } from './chatbot/chatbot.module';
 import { PlaceModule } from './place/place.module';
 import { UsersModule } from './users/users.module';
 import { RoutingModule } from './routing/routing.module';
+import { PoiModule } from './poi/poi.module';
 import { MapModule } from './map/map.module';
 import { WeatherModule } from './weather/weather.module';
 
@@ -39,7 +40,7 @@ async function bootstrap() {
         .build();
 
     const { document, tags } = setupSwagger(app, config, {
-        include: [AuthModule, ChatbotModule, PlaceModule, UsersModule, RoutingModule, MapModule, WeatherModule],
+        include: [AuthModule, ChatbotModule, PlaceModule, UsersModule, RoutingModule, PoiModule, MapModule, WeatherModule],
     });
 
     SwaggerModule.setup('api/docs', app, document, {

@@ -31,14 +31,7 @@ class LocationNearbyData {
     @ApiProperty({ description: 'Search center longitude', example: 2.2945 })
     longitude: number;
 
-    @ApiProperty({
-        description: 'Nearby places categorized by amenity type',
-        example: {
-            restaurant: [{ id: '123', name: 'Restaurant A', lat: 48.8584, lng: 2.2945, type: 'restaurant' }],
-            cafe: [{ id: '456', name: 'Cafe B', lat: 48.8585, lng: 2.2946, type: 'cafe' }],
-        },
-    })
-    places: { [category: string]: NearbyPlace[] };
+    [category: string]: any;
 
     @ApiProperty({ description: 'Number of places found for this location', example: 15 })
     count: number;

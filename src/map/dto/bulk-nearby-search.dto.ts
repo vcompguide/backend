@@ -54,7 +54,7 @@ export class BulkNearbySearchDto {
     @IsOptional()
     @Transform(({ value }) => {
         if (typeof value === 'string') {
-            return value.split(',').map((item) => item.trim());
+            return value.split(',').map((item) => item.trim()).filter(item => item.length > 0);
         }
         return value;
     })

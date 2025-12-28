@@ -191,38 +191,102 @@ export class OverpassService {
         amenities?: string[],
     ): Promise<any[]> {
         try {
-            const results = await Promise.all(
-                coordinates.map(async (coord) => {
-                    try {
-                        const result = await this.searchNearby(
-                            coord.latitude,
-                            coord.longitude,
-                            radius,
-                            amenities,
-                        );
-                        return {
-                            latitude: coord.latitude,
-                            longitude: coord.longitude,
-                            ...result,
-                        };
-                    } catch (error) {
-                        return {
-                            latitude: coord.latitude,
-                            longitude: coord.longitude,
-                            places: [],
-                            count: 0,
-                            error: error.message,
-                        };
+            // Build coordinate string for Overpass query: lat1,lng1,lat2,lng2,...
+            const coordString = coordinates
+                .map(coord => `${coord.latitude},${coord.longitude}`)
+                .join(',');
+
+            let query: string;
+            if (amenities && amenities.length > 0) {
+                // Search for multiple specific amenities with OR logic
+                const amenityQueries = amenities.map(a => 
+                    `node["amenity"="${a}"](around:${radius},${coordString});`
+                ).join('\n                  ');
+                
+                query = `
+                    [out:json][timeout:25];
+                    (
+                      ${amenityQueries}
+                    );
+                    out center ${this.MAX_RESULTS};
+                `;
+            } else {
+                // Search for all amenities
+                query = `
+                    [out:json][timeout:25];
+                    (
+                      node["amenity"](around:${radius},${coordString});
+                    );
+                    out center ${this.MAX_RESULTS};
+                `;
+            }
+
+            // Execute single query for all coordinates
+            const allResults = await this.executeQuery(query);
+
+            // Group results by closest coordinate
+            const resultsByCoordinate = coordinates.map(coord => ({
+                latitude: coord.latitude,
+                longitude: coord.longitude,
+                places: [] as any[],
+                count: 0,
+            }));
+
+            // Assign each place to the nearest coordinate
+            allResults.places.forEach((place: any) => {
+                let minDistance = Number.MAX_VALUE;
+                let closestIndex = 0;
+
+                coordinates.forEach((coord, index) => {
+                    const distance = this.calculateDistance(
+                        place.lat,
+                        place.lon,
+                        coord.latitude,
+                        coord.longitude
+                    );
+
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closestIndex = index;
                     }
-                })
-            );
-            return results;
+                });
+
+                // Only add if within radius
+                if (minDistance <= radius) {
+                    resultsByCoordinate[closestIndex].places.push(place);
+                }
+            });
+
+            // Update counts
+            resultsByCoordinate.forEach(result => {
+                result.count = result.places.length;
+            });
+
+            return resultsByCoordinate;
         } catch (error) {
             throw new HttpException(
                 `Failed to search nearby locations in bulk: ${error.message}`,
                 HttpStatus.BAD_REQUEST,
             );
         }
+    }
+
+    /**
+     * Calculate distance between two coordinates in meters using Haversine formula
+     */
+    private calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+        const R = 6371000; // Earth's radius in meters
+        const φ1 = (lat1 * Math.PI) / 180;
+        const φ2 = (lat2 * Math.PI) / 180;
+        const Δφ = ((lat2 - lat1) * Math.PI) / 180;
+        const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+
+        const a =
+            Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+            Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return R * c;
     }
 
     /**
