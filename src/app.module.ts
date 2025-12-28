@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { ChatModule } from './chat/chat.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
 import { ExternalApiModule } from './external-api/external-api.module';
 import { GeocodingModule } from './geocoding/geocoding.module';
@@ -23,6 +24,7 @@ import { WeatherModule } from './weather/weather.module';
             isGlobal: true,
         }),
         AuthModule,
+        ChatModule,
         ChatbotModule,
         ExternalApiModule,
         GmapsModule,

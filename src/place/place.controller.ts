@@ -1,4 +1,3 @@
-import { Place } from '@libs/coredb/schemas/place.schema';
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PlaceFilterDto } from './dtos';

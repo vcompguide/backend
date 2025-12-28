@@ -5,9 +5,16 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { setupSwagger } from 'libs';
 import { AppModule } from './app.module';
 import { AuthModule } from './auth/auth.module';
+import { ChatModule } from './chat/chat.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { ExternalApiModule } from './external-api/external-api.module';
+import { GmapsModule } from './gmaps/gmaps.module';
+import { LandmarksModule } from './landmarks/landmark.module';
 import { MapModule } from './map/map.module';
 import { PlaceModule } from './place/place.module';
+import { PoiModule } from './poi/poi.module';
+import { RatingModule } from './ratings/ratings.module';
 import { RoutingModule } from './routing/routing.module';
 import { UsersModule } from './users/users.module';
 import { WeatherModule } from './weather/weather.module';
@@ -39,7 +46,22 @@ async function bootstrap() {
         .build();
 
     const { document, tags } = setupSwagger(app, config, {
-        include: [AuthModule, ChatbotModule, PlaceModule, UsersModule, RoutingModule, MapModule, WeatherModule],
+        include: [
+            ChatModule,
+            AuthModule,
+            ChatbotModule,
+            PlaceModule,
+            UsersModule,
+            RoutingModule,
+            MapModule,
+            WeatherModule,
+            CloudinaryModule,
+            ExternalApiModule,
+            GmapsModule,
+            LandmarksModule,
+            PoiModule,
+            RatingModule,
+        ],
     });
 
     SwaggerModule.setup('api/docs', app, document, {
