@@ -1,16 +1,17 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { NominatimService } from '../external-api/nominatim.service';
-import { OsrmService } from '../external-api/osrm.service';
 import { OverpassService } from '../external-api/overpass.service';
-import { BuildRouteDto, UpdateWaypointsDto } from './dto';
+import { OsrmService } from '../external-api/osrm.service';
 import {
-    LocationDetailResponse,
     MapLocation,
-    NearbyResponse,
+    SearchPlaceResponse,
+    LocationDetailResponse,
     RouteResponse,
     RouteSummaryResponse,
-    SearchPlaceResponse,
+    NearbyResponse,
 } from './response';
+import { BulkNearbyResponse } from './response/bulk-nearby.response';
+import { BuildRouteDto, UpdateWaypointsDto } from './dto';
 
 @Injectable()
 export class MapService {
@@ -151,6 +152,46 @@ export class MapService {
         }
     }
 
+    async searchNearbyBulk(
+        coordinates: Array<{ lat: number; lng: number }>,
+        radius = 1000,
+        amenities?: string[],
+    ): Promise<BulkNearbyResponse> {
+        try {
+            const coordinatesFormatted = coordinates.map(coord => ({
+                latitude: coord.lat,
+                longitude: coord.lng,
+            }));
+
+            const bulkResults = await this.overpassService.searchNearbyBulk(
+                coordinatesFormatted,
+                radius,
+                amenities,
+            );
+
+            const formattedResults = bulkResults.map(result => {
+                const organizedPOIs = this.organizePOIsByCategory(result.places || []);
+                return {
+                    latitude: result.latitude,
+                    longitude: result.longitude,
+                    ...organizedPOIs,
+                    count: result.count || 0,
+                };
+            });
+
+            const totalPlaces = formattedResults.reduce((sum, result) => sum + result.count, 0);
+
+            return {
+                success: true,
+                data: formattedResults,
+                totalLocations: coordinates.length,
+                totalPlaces,
+            };
+        } catch (error) {
+            throw new HttpException(`Failed to search nearby in bulk: ${error.message}`, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     summarizeRoute(route: any): RouteSummaryResponse {
         const totalDistanceKm = (route.distance / 1000).toFixed(1);
 
@@ -192,6 +233,9 @@ export class MapService {
 
     private organizePOIsByCategory(places: any[]): Record<string, any[]> {
         const categorized: Record<string, any[]> = {};
+
+        // Filter out unnamed locations before categorizing
+        // const namedPlaces = places.filter(place => place.name && place.name !== 'Unnamed');
 
         places.forEach((place) => {
             const category = place.tags?.amenity || place.tags?.tourism || place.tags?.shop || 'other';

@@ -1,31 +1,35 @@
+import { IsNumber, IsOptional, IsArray, IsString, Min, Max, ValidateNested, ArrayMinSize } from 'class-validator';
+import { Type, Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform, Type } from 'class-transformer';
-import { IsArray, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 
-export class NearbySearchDto {
-    @ApiProperty({
-        description: 'Center latitude coordinate for search',
-        minimum: -90,
-        maximum: 90,
-        example: 48.8584,
-    })
-    @Type(() => Number)
+class CoordinatePair {
+    @ApiProperty({ description: 'Latitude coordinate', minimum: -90, maximum: 90, example: 48.8584 })
     @IsNumber()
     @Min(-90)
     @Max(90)
     lat: number;
 
-    @ApiProperty({
-        description: 'Center longitude coordinate for search',
-        minimum: -180,
-        maximum: 180,
-        example: 2.2945,
-    })
-    @Type(() => Number)
+    @ApiProperty({ description: 'Longitude coordinate', minimum: -180, maximum: 180, example: 2.2945 })
     @IsNumber()
     @Min(-180)
     @Max(180)
     lng: number;
+}
+
+export class BulkNearbySearchDto {
+    @ApiProperty({
+        description: 'Array of coordinate pairs to search from',
+        example: [
+            { lat: 48.8584, lng: 2.2945 },
+            { lat: 51.5074, lng: -0.1278 }
+        ],
+        type: [CoordinatePair]
+    })
+    @IsArray()
+    @ArrayMinSize(1)
+    @ValidateNested({ each: true })
+    @Type(() => CoordinatePair)
+    coordinates: CoordinatePair[];
 
     @ApiProperty({
         description: 'Search radius in meters',

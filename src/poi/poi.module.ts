@@ -7,6 +7,6 @@ import { PoiService } from './poi.service';
 @Module({
     imports: [ExternalApiModule],
     controllers: [PoiController],
-    providers: [PoiService, OverpassService],
+    providers: [PoiService],
 })
 export class PoiModule {}
