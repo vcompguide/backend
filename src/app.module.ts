@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { ChatModule } from './chat/chat.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
 import { ExternalApiModule } from './external-api/external-api.module';
+import { FavoriteModule } from './favorite/favorite.module';
 import { GeocodingModule } from './geocoding/geocoding.module';
 import { GmapsModule } from './gmaps/gmaps.module';
 import { LandmarksModule } from './landmarks/landmark.module';
@@ -23,8 +25,16 @@ import { WeatherModule } from './weather/weather.module';
             envFilePath: ['.env.local', '.env'],
             isGlobal: true,
         }),
+        MongooseModule.forRootAsync({
+            imports: [ConfigModule],
+            useFactory: async (configService: ConfigService) => ({
+                uri: configService.get<string>('CORE_DB_URI') || '',
+            }),
+            inject: [ConfigService],
+        }),
         AuthModule,
         ChatModule,
+        FavoriteModule,
         ChatbotModule,
         ExternalApiModule,
         GmapsModule,

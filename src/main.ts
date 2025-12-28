@@ -10,6 +10,7 @@ import { ChatModule } from './chat/chat.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ExternalApiModule } from './external-api/external-api.module';
+import { FavoriteModule } from './favorite/favorite.module';
 import { GmapsModule } from './gmaps/gmaps.module';
 import { LandmarksModule } from './landmarks/landmark.module';
 import { MapModule } from './map/map.module';
@@ -64,6 +65,7 @@ async function bootstrap() {
             LandmarksModule,
             PoiModule,
             SavedRouteModule,
+            FavoriteModule,
         ],
     });
 
