@@ -39,4 +39,19 @@ export class PlaceController {
     async insert(@Body() query: CreatePlaceDto) {
         return new PlaceResponse(await this.placeService.createPlace(query));
     }
+
+    @ApiOperation({
+        summary: 'Get place by name',
+        description: 'Retrieve a place by its name.',
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Place retrieved successfully',
+        type: PlacesResponse,
+    })
+    @Get('by-name')
+    getPlaceByName(@Query('name') name: string) {
+        const place = this.placeService.getPlaceByName(name);
+        return new PlacesResponse(place ? { places: [place] } : { places: [] });
+    }
 }

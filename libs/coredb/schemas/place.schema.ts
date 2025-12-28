@@ -34,3 +34,5 @@ export class Place {
 }
 
 export const PlaceSchema = SchemaFactory.createForClass(Place);
+
+PlaceSchema.index({ name: 1 });

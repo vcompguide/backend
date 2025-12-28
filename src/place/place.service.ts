@@ -19,4 +19,8 @@ export class PlaceService {
     getPlaceFilterByTags(tags?: string[]): Place[] {
         return this.placeQuerierService.getPlaceFilterByTags(tags);
     }
+
+    getPlaceByName(name: string): Place | undefined {
+        return this.placeQuerierService.getPlaceByName(name);
+    }
 }
