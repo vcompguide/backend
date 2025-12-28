@@ -2,7 +2,9 @@ import { Controller, Get, Post, Body, Query, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { MapService } from './map.service';
 import { SearchPlaceDto, LocationDetailDto, BuildRouteDto, UpdateWaypointsDto, NearbySearchDto } from './dto';
+import { BulkNearbySearchDto } from './dto/bulk-nearby-search.dto';
 import { SearchPlaceResponse, LocationDetailResponse, RouteResponse, NearbyResponse } from './response';
+import { BulkNearbyResponse } from './response/bulk-nearby.response';
 
 @ApiTags('Map')
 @Controller('map')
@@ -128,5 +130,27 @@ export class MapController {
     })
     async searchNearby(@Query() nearbyDto: NearbySearchDto): Promise<NearbyResponse> {
         return await this.mapService.searchNearby(nearbyDto.lat, nearbyDto.lng, nearbyDto.radius, nearbyDto.amenities);
+    }
+
+    @Post('nearby/bulk')
+    @ApiOperation({
+        summary: 'Search for nearby places for multiple coordinates',
+        description: 'Find nearby amenities and points of interest for multiple locations within specified radius',
+    })
+    @ApiResponse({
+        status: HttpStatus.CREATED,
+        description: 'Nearby places found successfully for all coordinates',
+        type: BulkNearbyResponse,
+    })
+    @ApiResponse({
+        status: HttpStatus.BAD_REQUEST,
+        description: 'Invalid coordinates, radius, or search parameters',
+    })
+    async searchNearbyBulk(@Body() bulkNearbyDto: BulkNearbySearchDto): Promise<BulkNearbyResponse> {
+        return await this.mapService.searchNearbyBulk(
+            bulkNearbyDto.coordinates,
+            bulkNearbyDto.radius,
+            bulkNearbyDto.amenities,
+        );
     }
 }

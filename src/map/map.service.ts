@@ -10,6 +10,7 @@ import {
     RouteSummaryResponse,
     NearbyResponse,
 } from './response';
+import { BulkNearbyResponse } from './response/bulk-nearby.response';
 import { BuildRouteDto, UpdateWaypointsDto } from './dto';
 
 @Injectable()
@@ -148,6 +149,43 @@ export class MapService {
             };
         } catch (error) {
             throw new HttpException(`Failed to search nearby: ${error.message}`, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    async searchNearbyBulk(
+        coordinates: Array<{ lat: number; lng: number }>,
+        radius = 1000,
+        amenities?: string[],
+    ): Promise<BulkNearbyResponse> {
+        try {
+            const coordinatesFormatted = coordinates.map(coord => ({
+                latitude: coord.lat,
+                longitude: coord.lng,
+            }));
+
+            const bulkResults = await this.overpassService.searchNearbyBulk(
+                coordinatesFormatted,
+                radius,
+                amenities,
+            );
+
+            const formattedResults = bulkResults.map(result => ({
+                latitude: result.latitude,
+                longitude: result.longitude,
+                places: this.organizePOIsByCategory(result.places || []),
+                count: result.count || 0,
+            }));
+
+            const totalPlaces = formattedResults.reduce((sum, result) => sum + result.count, 0);
+
+            return {
+                success: true,
+                data: formattedResults,
+                totalLocations: coordinates.length,
+                totalPlaces,
+            };
+        } catch (error) {
+            throw new HttpException(`Failed to search nearby in bulk: ${error.message}`, HttpStatus.BAD_REQUEST);
         }
     }
 

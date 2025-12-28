@@ -1,8 +1,9 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Post, Query, Body } from '@nestjs/common';
 import { PoiService } from './poi.service';
 import { NearbySearchDto } from './dto/nearby-search.dto';
 import { TagsSearchDto } from './dto/tags-search.dto';
 import { BoundingBoxSearchDto } from './dto/bounding-box-search.dto';
+import { BulkNearbySearchDto } from './dto/bulk-nearby-search.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('poi')
@@ -15,6 +16,13 @@ export class PoiController {
   @ApiResponse({ status: 200, description: 'Returns nearby Poi' })
   async searchNearby(@Query() dto: NearbySearchDto) {
     return this.PoiService.searchNearby(dto);
+  }
+
+  @Post('nearby/bulk')
+  @ApiOperation({ summary: 'Search for nearby Poi by radius for multiple coordinates' })
+  @ApiResponse({ status: 200, description: 'Returns nearby Poi for each coordinate pair' })
+  async searchNearbyBulk(@Body() dto: BulkNearbySearchDto) {
+    return this.PoiService.searchNearbyBulk(dto);
   }
 
   @Get('tags')

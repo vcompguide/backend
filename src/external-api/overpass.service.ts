@@ -179,6 +179,53 @@ export class OverpassService {
     }
 
     /**
+     * Search for nearby locations by radius for multiple coordinate pairs
+     * @param coordinates Array of coordinate pairs (latitude, longitude)
+     * @param radius Search radius in meters
+     * @param amenities Optional array of amenity types to search for
+     * @returns Array of results for each coordinate pair
+     */
+    async searchNearbyBulk(
+        coordinates: Array<{ latitude: number; longitude: number }>,
+        radius: number,
+        amenities?: string[],
+    ): Promise<any[]> {
+        try {
+            const results = await Promise.all(
+                coordinates.map(async (coord) => {
+                    try {
+                        const result = await this.searchNearby(
+                            coord.latitude,
+                            coord.longitude,
+                            radius,
+                            amenities,
+                        );
+                        return {
+                            latitude: coord.latitude,
+                            longitude: coord.longitude,
+                            ...result,
+                        };
+                    } catch (error) {
+                        return {
+                            latitude: coord.latitude,
+                            longitude: coord.longitude,
+                            places: [],
+                            count: 0,
+                            error: error.message,
+                        };
+                    }
+                })
+            );
+            return results;
+        } catch (error) {
+            throw new HttpException(
+                `Failed to search nearby locations in bulk: ${error.message}`,
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+    }
+
+    /**
      * Format the Overpass API response into a more user-friendly structure
      */
     private formatResponse(data: any): any {

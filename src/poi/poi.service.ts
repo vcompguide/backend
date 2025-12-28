@@ -3,6 +3,7 @@ import { OverpassService } from '../external-api/overpass.service';
 import { NearbySearchDto } from './dto/nearby-search.dto';
 import { TagsSearchDto } from './dto/tags-search.dto';
 import { BoundingBoxSearchDto } from './dto/bounding-box-search.dto';
+import { BulkNearbySearchDto } from './dto/bulk-nearby-search.dto';
 
 @Injectable()
 export class PoiService {
@@ -12,6 +13,14 @@ export class PoiService {
     return this.overpassService.searchNearby(
       dto.latitude,
       dto.longitude,
+      dto.radius,
+      dto.amenities,
+    );
+  }
+
+  async searchNearbyBulk(dto: BulkNearbySearchDto) {
+    return this.overpassService.searchNearbyBulk(
+      dto.coordinates,
       dto.radius,
       dto.amenities,
     );
