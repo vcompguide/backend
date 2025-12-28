@@ -1,12 +1,12 @@
-import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { firstValueFrom } from 'rxjs';
-import { GetWeatherDto } from './dto/get-weather.dto';
-import { GetForecastDto } from './dto/get-forecast.dto';
-import { WeatherModel } from './weather.model';
-import { ForecastModel, ForecastPeriod } from './forecast.model';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { firstValueFrom } from 'rxjs';
+import { GetForecastDto } from './dto/get-forecast.dto';
+import { GetWeatherDto } from './dto/get-weather.dto';
+import { ForecastModel, ForecastPeriod } from './forecast.model';
 import { OpenWeatherCurrentResponse, OpenWeatherForecastResponse } from './types';
+import { WeatherModel } from './weather.model';
 
 const FORECAST_URL = 'https://api.openweathermap.org/data/2.5/forecast';
 const CURRENT_WEATHER_URL = 'https://api.openweathermap.org/data/2.5/weather';

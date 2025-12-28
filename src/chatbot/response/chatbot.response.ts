@@ -41,7 +41,7 @@ export class LocationRecommendationResponse {
     @ApiProperty({
         description: "The chatbot's recommendations for the specified location and category",
         type: String,
-        example: '1. Olivia\'s Prime Steakhouse - A michelin restaurant...',
+        example: "1. Olivia's Prime Steakhouse - A michelin restaurant...",
     })
     response: string;
 

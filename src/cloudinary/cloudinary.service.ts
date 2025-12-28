@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { v2 as cloudinary, UploadApiResponse, UploadApiErrorResponse } from 'cloudinary';
+import { UploadApiErrorResponse, UploadApiResponse, v2 as cloudinary } from 'cloudinary';
 import * as streamifier from 'streamifier';
 
 @Injectable()
@@ -13,12 +13,9 @@ export class CloudinaryService {
         });
     }
 
-    async uploadImage(
-		file: Express.Multer.File,
-		folder?: string
-	): Promise<UploadApiResponse | UploadApiErrorResponse> {
-		return new Promise((resolve, reject) => {
-			const uploadStream = cloudinary.uploader.upload_stream(
+    async uploadImage(file: Express.Multer.File, folder?: string): Promise<UploadApiResponse | UploadApiErrorResponse> {
+        return new Promise((resolve, reject) => {
+            const uploadStream = cloudinary.uploader.upload_stream(
                 {
                     folder: folder || 'smart-tourism',
                     resource_type: 'image',
@@ -34,23 +31,23 @@ export class CloudinaryService {
                 },
             );
 
-			// Convert buffer to streamb and pipe into Cloudinary
+            // Convert buffer to streamb and pipe into Cloudinary
             streamifier.createReadStream(file.buffer).pipe(uploadStream);
-		});
+        });
     }
 
     async deleteImage(publicId: string): Promise<any> {
-		const result = await cloudinary.uploader.destroy(publicId);
-		return result;
+        const result = await cloudinary.uploader.destroy(publicId);
+        return result;
     }
 
     async deleteImages(publicIds: string[]): Promise<any> {
-		const result = await cloudinary.api.delete_resources(publicIds);
-		return result;
+        const result = await cloudinary.api.delete_resources(publicIds);
+        return result;
     }
 
     async getImageDetails(publicId: string): Promise<any> {
-		const result = await cloudinary.api.resource(publicId);
-		return result;
+        const result = await cloudinary.api.resource(publicId);
+        return result;
     }
 }

@@ -1,6 +1,6 @@
-import { ConfigService } from '@nestjs/config';
 import { InferenceClient } from '@huggingface/inference';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 interface Message {
     role: string;
@@ -34,12 +34,7 @@ export class HuggingFaceService {
 Be concise, friendly, and informative. If you don't know specific details about a location, provide general helpful advice and suggest the user verify current information.`;
     }
 
-    async chat(
-        userMessage: string,
-        conversationHistory?: Message[],
-        maxToken?: 200,
-        temperature?: 0.7
-    ): Promise<any> {
+    async chat(userMessage: string, conversationHistory?: Message[], maxToken?: 200, temperature?: 0.7): Promise<any> {
         // Add system prompt to conversation context
         const messages: Message[] = [
             {
@@ -75,7 +70,6 @@ Be concise, friendly, and informative. If you don't know specific details about 
                 response: generated_text?.trim(),
                 model: this.MODEL_ID,
             };
-            
         } catch (error) {
             throw new HttpException(
                 `Failed to get response from Hugging Face: ${error.message || 'Unknown error'}`,
@@ -156,7 +150,6 @@ Be concise, friendly, and informative. If you don't know specific details about 
                         : undefined,
                 imageURL,
             };
-
         } catch (error) {
             throw new HttpException(
                 `Failed to analyze image: ${error.message || 'Unknown error'}`,

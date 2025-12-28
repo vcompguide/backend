@@ -1,6 +1,6 @@
-import { IsNumber, IsOptional, IsArray, IsString, Min, Max } from 'class-validator';
-import { Type, Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform, Type } from 'class-transformer';
+import { IsArray, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export class NearbySearchDto {
     @ApiProperty({

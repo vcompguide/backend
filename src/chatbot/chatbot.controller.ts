@@ -1,4 +1,5 @@
 import {
+    BadRequestException,
     Body,
     Controller,
     HttpCode,
@@ -6,10 +7,9 @@ import {
     Post,
     UploadedFile,
     UseInterceptors,
-    BadRequestException,
 } from '@nestjs/common';
-import { ApiConsumes, ApiOperation, ApiResponse, ApiTags, ApiBody } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ChatbotService } from './chatbot.service';
 import { ChatRequestDto, ImageLocationRequestDto, LocationRecommendationDto } from './dto';
 import { ChatResponse, ImageLocationResponse, LocationRecommendationResponse } from './response';

@@ -6,10 +6,10 @@ import { setupSwagger } from 'libs';
 import { AppModule } from './app.module';
 import { AuthModule } from './auth/auth.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
-import { PlaceModule } from './place/place.module';
-import { UsersModule } from './users/users.module';
-import { RoutingModule } from './routing/routing.module';
 import { MapModule } from './map/map.module';
+import { PlaceModule } from './place/place.module';
+import { RoutingModule } from './routing/routing.module';
+import { UsersModule } from './users/users.module';
 import { WeatherModule } from './weather/weather.module';
 
 export function swaggerCustomScript(endpoint: string, tagOrder?: string[]) {

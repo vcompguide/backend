@@ -1,10 +1,10 @@
+import { Place } from '@libs/coredb/schemas/place.schema';
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PlaceFilterDto } from './dtos';
+import { CreatePlaceDto } from './dtos/create-place.dto';
 import { PlaceService } from './place.service';
 import { PlaceResponse, PlacesResponse } from './response';
-import { Place } from '@libs/coredb/schemas/place.schema';
-import { CreatePlaceDto } from './dtos/create-place.dto';
 
 @ApiTags('Place')
 @Controller('place')

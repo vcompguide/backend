@@ -1,7 +1,7 @@
 import { OmitMethod } from '@libs/common/types';
 import { ApiProperty } from '@nestjs/swagger';
-import { WeatherLocationResponse } from './weather.response';
 import { ForecastModel, ForecastPeriod } from '../forecast.model';
+import { WeatherLocationResponse } from './weather.response';
 
 export class ForecastPeriodResponse extends ForecastPeriod {
     @ApiProperty({

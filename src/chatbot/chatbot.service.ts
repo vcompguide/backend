@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { HuggingFaceService } from '../external-api/hugging-face.service';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { HuggingFaceService } from '../external-api/hugging-face.service';
 import { ChatRequestDto, LocationRecommendationDto } from './dto';
 import { ChatResponse, ImageLocationResponse, LocationRecommendationResponse } from './response';
 
@@ -29,10 +29,7 @@ export class ChatbotService {
         return new LocationRecommendationResponse(result);
     }
 
-    async analyzeImageLocation(
-        file: Express.Multer.File,
-        additionalContext?: string
-    ): Promise<ImageLocationResponse> {
+    async analyzeImageLocation(file: Express.Multer.File, additionalContext?: string): Promise<ImageLocationResponse> {
         // Upload image to Cloudinary to get a URL
         const uploadResult = await this.cloudinaryService.uploadImage(file, 'image-analysis');
         const imageURL = uploadResult.secure_url;

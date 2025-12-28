@@ -1,10 +1,10 @@
 import { User, UserDocument } from '@libs/coredb/schemas/user.schema';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import * as bcrypt from 'bcrypt';
+import { Model } from 'mongoose';
 import { CreateUserDto } from './dto';
 import { UserResponse } from './response';
-import { Model } from 'mongoose';
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {

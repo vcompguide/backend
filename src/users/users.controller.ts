@@ -1,12 +1,12 @@
 import { type UserDocument } from '@libs/coredb/schemas/user.schema';
 import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateUserDto } from './dto';
 import { GetUser } from 'src/auth/decorator/get-user.decorator';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { UsersService } from './users.service';
+import { CreateUserDto } from './dto';
 import { UserResponse } from './response';
-import { UseGuards } from '@nestjs/common';
+import { UsersService } from './users.service';
 
 @ApiTags('User')
 @Controller('users')
