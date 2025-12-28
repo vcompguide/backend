@@ -12,7 +12,6 @@ import { LandmarksModule } from './landmarks/landmark.module';
 import { MapModule } from './map/map.module';
 import { PlaceModule } from './place/place.module';
 import { PoiModule } from './poi/poi.module';
-import { RatingModule } from './ratings/ratings.module';
 import { RoutingModule } from './routing/routing.module';
 import { UsersModule } from './users/users.module';
 import { WeatherModule } from './weather/weather.module';
@@ -31,7 +30,6 @@ import { WeatherModule } from './weather/weather.module';
         LandmarksModule,
         PlaceModule,
         WeatherModule,
-        RatingModule,
         GeocodingModule,
         RoutingModule,
         PoiModule,
