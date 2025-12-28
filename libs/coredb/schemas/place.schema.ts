@@ -9,7 +9,7 @@ export type PlaceDocument = Place & Document;
     timestamps: true,
 })
 export class Place {
-    @Prop({ type: String, required: true, trim: true })
+    @Prop({ type: String, required: true, trim: true, unique: true, index: true })
     name!: string;
 
     @Prop({ type: GeoPoint, required: true })
