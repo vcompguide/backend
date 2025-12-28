@@ -1,8 +1,8 @@
-import { Body, Controller, Post, HttpCode, HttpStatus } from '@nestjs/common';
-import { RoutingService } from './routing.service';
-import { RouteRequestDto } from './dto';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { RouteRequestDto } from './dto';
 import { RouteResponse } from './response';
+import { RoutingService } from './routing.service';
 
 @ApiTags('Routing')
 @Controller('routing')

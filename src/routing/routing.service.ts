@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { OsrmService } from 'src/external-api/osrm.service';
 import { RouteRequestDto } from './dto';
 import { RouteResponse } from './response';

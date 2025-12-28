@@ -1,6 +1,6 @@
 import { OmitMethod } from '@libs/common/types';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { WeatherModel, WeatherLocation, CurrentWeather } from '../weather.model';
+import { CurrentWeather, WeatherLocation, WeatherModel } from '../weather.model';
 
 export class WeatherLocationResponse extends WeatherLocation {
     @ApiProperty({ description: 'Latitude in decimal degrees', example: 52.52 })

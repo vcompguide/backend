@@ -1,6 +1,6 @@
-import { IsNumber, IsArray, IsEnum, IsOptional, ValidateNested, Min, Max } from 'class-validator';
-import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { IsArray, IsEnum, IsNumber, IsOptional, Max, Min, ValidateNested } from 'class-validator';
 
 class Coordinate {
     @ApiProperty({

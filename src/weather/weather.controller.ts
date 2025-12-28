@@ -1,10 +1,10 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { WeatherService } from './weather.service';
-import { GetWeatherDto } from './dto/get-weather.dto';
 import { GetForecastDto } from './dto/get-forecast.dto';
-import { WeatherResponse } from './responses/weather.response';
+import { GetWeatherDto } from './dto/get-weather.dto';
 import { ForecastResponse } from './responses/forecast.response';
+import { WeatherResponse } from './responses/weather.response';
+import { WeatherService } from './weather.service';
 
 @ApiTags('Weather')
 @Controller('weather')

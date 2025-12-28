@@ -1,7 +1,7 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { firstValueFrom } from 'rxjs';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosResponse } from 'axios';
+import { firstValueFrom } from 'rxjs';
 
 interface Coordinate {
     lat: number;
@@ -39,17 +39,11 @@ export class OsrmService {
             const data = response.data;
 
             if (data.code !== 'Ok') {
-                throw new HttpException(
-                    `OSRM API error: ${data.message || 'Unknown error'}`,
-                    HttpStatus.BAD_REQUEST,
-                );
+                throw new HttpException(`OSRM API error: ${data.message || 'Unknown error'}`, HttpStatus.BAD_REQUEST);
             }
 
             if (!data.routes || data.routes.length === 0) {
-                throw new HttpException(
-                    'No route found between the specified waypoints',
-                    HttpStatus.NOT_FOUND,
-                );
+                throw new HttpException('No route found between the specified waypoints', HttpStatus.NOT_FOUND);
             }
 
             const route = data.routes[0];
@@ -74,7 +68,6 @@ export class OsrmService {
                     })),
                 },
             };
-
         } catch (error) {
             throw new HttpException(
                 `Failed to fetch route from OSRM: ${error.message || 'Unknown error'}`,

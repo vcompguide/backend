@@ -6,6 +6,7 @@ import { BaseMongoStreamQuerier } from '../base-mongo-stream-querier.service';
 
 export class PlaceQuerierService extends BaseMongoStreamQuerier {
     private allPlace: Place[] = [];
+    private nameToPlaceMap: Map<string, Place> = new Map();
 
     constructor(
         @InjectModel(Place.name, 'core') private readonly placeModel: Model<Place>,
@@ -24,6 +25,9 @@ export class PlaceQuerierService extends BaseMongoStreamQuerier {
 
     async syncFromDatabase() {
         this.allPlace = await this.placeModel.find().lean();
+        for (const place of this.allPlace) {
+            this.nameToPlaceMap.set(place.name, place);
+        }
     }
 
     getPlaceFilterByTags(tags?: string[]): Place[] {
@@ -31,5 +35,9 @@ export class PlaceQuerierService extends BaseMongoStreamQuerier {
             return this.allPlace;
         }
         return this.allPlace.filter((place) => place.tags.some((tag) => tags.includes(tag)));
+    }
+
+    getPlaceByName(name: string): Place | undefined {
+        return this.nameToPlaceMap.get(name);
     }
 }

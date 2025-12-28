@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { OmitMethod } from '@libs/common/types';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class AuthResponse {
     @ApiProperty({

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ExternalApiModule } from '../external-api/external-api.module';
-import { MapService } from './map.service';
 import { MapController } from './map.controller';
+import { MapService } from './map.service';
 
 @Module({
     imports: [ExternalApiModule],

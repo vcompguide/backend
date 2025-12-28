@@ -30,12 +30,12 @@ export class ChatRequestDto {
         example: [
             {
                 role: 'chatbot',
-                content: 'Hello user, I am chatbot.'
+                content: 'Hello user, I am chatbot.',
             },
             {
                 role: 'user',
-                content: 'Hello chatbot, I am user.'
-            }
+                content: 'Hello chatbot, I am user.',
+            },
         ],
         required: false,
     })

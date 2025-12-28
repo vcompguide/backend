@@ -191,37 +191,36 @@ export class OverpassService {
         amenities?: string[],
     ): Promise<any[]> {
         try {
-            // Build coordinate string for Overpass query: lat1,lng1,lat2,lng2,...
-            const coordString = coordinates
-                .map(coord => `${coord.latitude},${coord.longitude}`)
-                .join(',');
-
-            let query: string;
+            // Build a single optimized query with multiple coordinates in a union
+            let nodeQueries: string[] = [];
+            
             if (amenities && amenities.length > 0) {
-                // Search for multiple specific amenities with OR logic
-                const amenityQueries = amenities.map(a => 
-                    `node["amenity"="${a}"](around:${radius},${coordString});`
-                ).join('\n                  ');
-                
-                query = `
-                    [out:json][timeout:25];
-                    (
-                      ${amenityQueries}
-                    );
-                    out center ${this.MAX_RESULTS};
-                `;
+                // For each coordinate and each amenity, create a node query
+                coordinates.forEach(coord => {
+                    amenities.forEach(amenity => {
+                        nodeQueries.push(
+                            `node(around:${radius},${coord.latitude},${coord.longitude})["amenity"="${amenity}"];`
+                        );
+                    });
+                });
             } else {
-                // Search for all amenities
-                query = `
-                    [out:json][timeout:25];
-                    (
-                      node["amenity"](around:${radius},${coordString});
+                // For each coordinate, search for all amenities
+                coordinates.forEach(coord => {
+                    nodeQueries.push(
+                        `node(around:${radius},${coord.latitude},${coord.longitude})["amenity"];`
                     );
-                    out center ${this.MAX_RESULTS};
-                `;
+                });
             }
 
-            // Execute single query for all coordinates
+            const query = `
+                [out:json][timeout:60];
+                (
+                  ${nodeQueries.join('\n  ')}
+                );
+                out center ${this.MAX_RESULTS};
+            `;
+
+            // Execute single optimized query for all coordinates
             const allResults = await this.executeQuery(query);
 
             // Group results by closest coordinate
@@ -257,9 +256,14 @@ export class OverpassService {
                 }
             });
 
-            // Update counts
+            // Update counts and remove duplicates per coordinate
             resultsByCoordinate.forEach(result => {
-                result.count = result.places.length;
+                // Remove duplicate places by id
+                const uniquePlaces = result.places.filter((place, index, self) => 
+                    index === self.findIndex(p => p.id === place.id)
+                );
+                result.places = uniquePlaces;
+                result.count = uniquePlaces.length;
             });
 
             return resultsByCoordinate;

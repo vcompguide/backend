@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { GeocodingService } from './geocoding.service';
-import { GeocodingController } from './geocoding.controller';
 import { ExternalApiModule } from '../external-api/external-api.module';
+import { GeocodingController } from './geocoding.controller';
+import { GeocodingService } from './geocoding.service';
 
 @Module({
     imports: [ExternalApiModule],

@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { GeocodingService } from './geocoding.service';
 import { ReverseGeocodeDto, SearchPlaceDto } from './dto';
+import { GeocodingService } from './geocoding.service';
 
 @Controller('geocoding')
 export class GeocodingController {
