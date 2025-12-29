@@ -33,9 +33,9 @@ export class FavoriteService {
     /**
      * Write operation: Update (replace) all favorites for a user
      */
-    async updateFavorites(userId: string, updateFavoritesDto: UpdateFavoritesDto): Promise<UpdateFavoriteResponse> {
-        await this.favoriteModel.findOneAndDelete({ userId }).exec();
-        // Upsert: update if exists, create if not exists
+    async updateFavorites(updateFavoritesDto: UpdateFavoritesDto): Promise<UpdateFavoriteResponse> {
+        await this.favoriteModel.findOneAndDelete({ userId: updateFavoritesDto.userId }).exec();
+
         const result = await new this.favoriteModel(updateFavoritesDto).save();
 
         return new UpdateFavoriteResponse({

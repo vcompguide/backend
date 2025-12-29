@@ -44,11 +44,7 @@ export class FavoriteController {
         description: 'Favorites saved successfully',
         type: UpdateFavoriteResponse,
     })
-    async updateFavorites(
-        @Request() req,
-        @Body() updateFavoritesDto: UpdateFavoritesDto,
-    ): Promise<UpdateFavoriteResponse> {
-        const userId = req.user?.id;
-        return this.favoriteService.updateFavorites(userId, updateFavoritesDto);
+    async updateFavorites(@Body() updateFavoritesDto: UpdateFavoritesDto): Promise<UpdateFavoriteResponse> {
+        return this.favoriteService.updateFavorites(updateFavoritesDto);
     }
 }
