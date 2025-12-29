@@ -24,6 +24,7 @@ export class PlaceQuerierService extends BaseMongoStreamQuerier {
     }
 
     async syncFromDatabase() {
+        this.nameToPlaceMap.clear();
         this.allPlace = await this.placeModel.find().lean();
         for (const place of this.allPlace) {
             this.nameToPlaceMap.set(place.name, place);
